@@ -1,16 +1,24 @@
-# wanderscout
+<h2><b>List of group member names</b></h2>
+Alano Davin Mandagi Awuy 2306172363
+<br>
+Samuella Putri Nadia Pauntu 2306170446
+<br>
+Kezia Salsalina Agtyra Sebayang 2306172086
+<br>
+Hafizh Surya Mustafa Zen 2306256343
+<br>
+Heinrich Edric Damadika Suselo 2306256356
 
-A new Flutter project.
+<h2><b>Link to the APK (not required at Stage I. The APK link can be added to README.md after completing Stage II.)</b></h2>
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+<h2><b>Application description (name and purpose of the application)</b></h2>
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<h2><b>List of modules implemented and the division of work among group members</b></h2>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+<h2><b>Roles or actors of the user application</b><h2>
+
+
+<h2><b>Integration with the web service to connect to the web application created in the midterm project</b></h2>
