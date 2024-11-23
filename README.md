@@ -86,3 +86,108 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <p>Admins are responsible for ensuring the smooth operation of the mobile application. This includes performing system updates, troubleshooting issues, and managing security protocols. These tasks ensure the mobile platform is stable, secure, and efficient for all users.</p>
 
 <h2><b>Integration with the web service to connect to the web application created in the midterm project</b></h2>
+
+## Overview
+This section describes the integration of our Flutter mobile application with the Django web application developed during the midterm project. The integration includes the `restaurant` and `tourist_attraction` apps, enabling dynamic data management and display within the mobile application.
+
+## Web Application Details
+- **Framework:** Django
+- **Purpose:** The Django application serves as the backend for managing data related to restaurants and tourist attractions. It provides RESTful APIs for CRUD operations and dynamic data handling.
+- **Link to Midterm Project Documentation:** [Midterm Project Details](https://pbp-fasilkom-ui.github.io/ganjil-2025/en/assignments/group/midterm)
+
+## Integration Steps
+
+1. **API Endpoints**:
+   - Each app (e.g., `restaurant`, `tourist_attraction`) exposes RESTful API endpoints for CRUD operations (Create, Read, Update, Delete).
+   - These endpoints handle tasks like fetching data lists, adding new records, updating details, and deleting entries.
+
+2. **API Communication**:
+   - The Flutter mobile app sends HTTP requests to these endpoints using the `http` package.
+   - Requests include necessary data (e.g., restaurant name or updated details) in JSON format.
+   - The Django backend processes these requests, interacts with the database, and returns JSON responses.
+
+3. **Data Parsing and Display**:
+   - The mobile app receives JSON responses (e.g., a list of restaurants or an error message).
+   - Flutter parses this JSON data and uses widgets to dynamically update the user interface (e.g., display restaurant cards or show details).
+
+4. **User Interaction**:
+   - Users perform actions (e.g., add a new attraction, edit restaurant details).
+   - These actions trigger the appropriate HTTP requests to the backend.
+
+5. **Authentication**:
+   - Protected endpoints (e.g., adding or deleting records) require user authentication.
+   - The mobile app includes authentication tokens in its requests to access these endpoints.
+
+6. **Common Workflow Example**:
+   - A user opens the app → The app fetches a list of restaurants using the GET `/api/` endpoint.
+   - The user selects a restaurant → The app fetches detailed information from the GET `/restaurant/<uuid:restaurant_id>/data/` endpoint.
+   - The user adds a new restaurant → The app sends a POST request to `/api/add_restaurant/` with the required details.
+
+---
+
+### Restaurant App
+1. **API Endpoints**:
+   - **GET `/api/`**: Fetches all restaurants.
+   - **POST `/api/add_restaurant/`**: Adds a new restaurant.
+   - **DELETE `/api/delete_restaurant/<uuid:restaurant_id>/`**: Deletes a specific restaurant.
+   - **GET `/restaurant/<uuid:restaurant_id>/data/`**: Retrieves detailed data for a specific restaurant.
+   - **PUT `/restaurant/<uuid:restaurant_id>/update/`**: Updates the details of a restaurant.
+
+2. **Features Enabled**:
+   - Display restaurant data in a card-based layout.
+   - Add, update, and delete restaurant records dynamically.
+   - Role-based access for admin functionalities.
+
+---
+
+### Tourist Attraction App
+1. **API Endpoints**:
+   - **GET `/api/`**: Fetches all tourist attractions.
+   - **POST `/add_attraction/`**: Adds a new tourist attraction.
+   - **DELETE `/delete_attraction/<uuid:attraction_id>/`**: Deletes a specific tourist attraction.
+   - **PUT `/edit_attraction/<uuid:attraction_id>/`**: Updates the details of a tourist attraction.
+   - **GET `/attractions/<uuid:attraction_id>/`**: Retrieves detailed data for a specific tourist attraction.
+
+2. **Features Enabled**:
+   - Display tourist attraction data in a visually engaging format.
+   - Add, update, and delete tourist attraction records.
+   - Support for detailed views of specific attractions.
+
+---
+
+### Common Integration Steps
+1. **Authentication**:
+   - The APIs are secured using Django's authentication system.
+   - Token-based authentication (e.g., JWT) is used to authenticate mobile app requests.
+
+2. **JSON Communication**:
+   - The mobile app sends HTTP requests and receives JSON responses.
+   - The app dynamically parses and displays the data using Flutter widgets.
+
+3. **Workflow**:
+   - **Fetching Data:** The mobile app retrieves lists and detailed records for restaurants and tourist attractions.
+   - **Adding Data:** New records can be added through POST requests.
+   - **Updating Data:** Existing records are modified using PUT requests.
+   - **Deleting Data:** Admin users can delete records using DELETE requests.
+
+4. **Dependencies**:
+   - **Flutter:** `http` for requests, `provider` for state management.
+   - **Django:** `djangorestframework` for APIs, `django-cors-headers` for cross-origin requests.
+
+---
+
+## Testing the Integration
+- **Postman:** Used to validate API functionality independently.
+- **Flutter Unit Testing:** Ensures JSON parsing, HTTP response handling, and UI updates.
+- **Django Integration Testing:** Verifies endpoint logic, authentication, and security.
+
+## Future Improvements
+- Add search and filter options for both restaurants and tourist attractions to improve usability.
+- Implement paginated responses for better performance with large datasets.
+- Include user-uploaded images for dynamic and personalized content updates.
+- Enhance error handling in the mobile app for API response failures.
+
+---
+
+## Summary
+This integration bridges the Django backend and Flutter frontend, enabling a dynamic and user-friendly application experience. The `restaurant` and `tourist_attraction` apps work seamlessly together, providing essential features like CRUD operations, role-based access, and real-time data updates. This project demonstrates the power of combining RESTful web services with a modern mobile app interface.
