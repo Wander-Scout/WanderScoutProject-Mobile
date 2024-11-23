@@ -18,6 +18,7 @@ WanderScout is the ultimate travel companion for exploring the enchanting city o
 Discover Yogyakarta's beauty with ease through our user-friendly platform, which not only simplifies trip planning but also introduces you to hidden gems and cultural wonders you won't find anywhere else. From iconic landmarks to off-the-beaten-path experiences, WanderScout ensures your journey is unforgettable. 
 
 <h2><b>List of modules implemented and the division of work among group members</b></h2>
+
 **Login, Authentication, and Security:**
 A login and register widget where users can create an account and login to that account from both the web app and the mobile app. This module will have the goal of ensuring that when a user is made or does a certain action the data will then be properly stored on both the web and mobile app.
 
@@ -41,5 +42,47 @@ Users can manage cart items and complete bookings with receipts, synced across w
 
 <h2><b>Roles or actors of the user application</b><h2>
 
+<h3>User Features</h3>
+
+<p>The mobile version of the platform is designed to provide users with seamless access to services and content through a responsive and intuitive interface. The following features are available to users:</p>
+
+<h4>1. Account Management</h4>  
+  <p>Users can create an account, log in, and securely manage their credentials through the integrated login and authentication system.</p>
+
+<h4>2. Browse Content</h4>  
+<p>Users have access to a wide range of features, including:</p>
+<ul>
+  <li>Restaurants: Explore a curated list of restaurants with detailed descriptions, price ranges, and ambiance information.</li>
+  <li>Tourist Attractions: Discover iconic landmarks and hidden gems, with detailed pages for each attraction.</li>
+  <li>Photo Gallery: Browse visually engaging images of events and locations in Yogyakarta sourced via RSS feeds.</li>
+  <li>News: Stay informed with the latest news, travel advisories, and local events through an integrated RSS feed.</li>
+</ul>
+
+<h4>3. Shopping Cart Management</h4>
+<p>Users can add restaurants and attractions to their shopping cart, view a rough estimate of the total cost, and proceed to checkout. Receipts are generated for all completed bookings.</p>
+
+<h4>4. Review Functionality</h4> 
+<p>Users can:</p>
+<ul>
+  <li>Submit reviews for restaurants and attractions.</li>
+  <li>View reviews submitted by other users.</li>
+  <li>Read admin responses to their reviews.</li>
+</ul>
+
+<h3>Admin Features</h3>
+
+<p>Admins in the mobile version of the application retain elevated permissions, ensuring efficient content management and user interaction oversight. Below is a breakdown of the functionalities available to admins:</p>
+
+<h4>1. Manage Content Across Platforms</h4>
+<p>Admins can add, edit, or delete platform content, including news articles, restaurant details, and tourist attractions. Any updates made by admins are reflected seamlessly on both the web and mobile applications, ensuring that users have access to accurate and consistent information.</p>
+
+<h4>2. Moderate and Respond to Customer Reviews</h4>
+<p>Admins have the ability to view and respond to user reviews directly through the mobile platform. This feature allows admins to address user feedback, provide clarifications, and foster positive interactions. By engaging with user reviews, admins enhance the overall user experience and ensure feedback is valued.</p>
+
+<h4>3. Real-Time Data Management</h4>
+<p>Admins can access and modify internal data structures, such as JSON and XML files, directly from the mobile interface. This capability ensures that data is accurately stored, transferred, and displayed across platforms, maintaining the application’s integrity and performance.</p>
+
+<h4>4. System Monitoring and Maintenance</h4>
+<p>Admins are responsible for ensuring the smooth operation of the mobile application. This includes performing system updates, troubleshooting issues, and managing security protocols. These tasks ensure the mobile platform is stable, secure, and efficient for all users.</p>
 
 <h2><b>Integration with the web service to connect to the web application created in the midterm project</b></h2>
