@@ -93,7 +93,7 @@ This section describes the integration of our Flutter mobile application with th
 ## Web Application Details
 - **Framework:** Django
 - **Purpose:** The Django application serves as the backend for managing data related to restaurants and tourist attractions. It provides RESTful APIs for CRUD operations and dynamic data handling.
-- **Link to Midterm Project Documentation:** [Midterm Project Details](https://pbp-fasilkom-ui.github.io/ganjil-2025/en/assignments/group/midterm)
+- **Link to Midterm Project Documentation:** [Midterm Project Details](https://github.com/Wander-Scout/WanderScoutProject)
 
 ## Integration Steps
 
