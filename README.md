@@ -28,9 +28,6 @@ Users who are tourists can access through a widget the ability to add and see ot
 **Restaurants:**  
 Users can view a list of restraunts with the displayed data and detailed page. The restraunts have price ranges and different themes. Users can add it to their cart on both platform and all admin changes will be reflected on both apps.
 
-**Photo Gallery:**  
-Users can view images of happenings all around the city sourced from a news network RSS feed.  
-
 **Tourist Attractions:**  
 Users can browse tourist spots, including hidden gems, with all information available on both platforms. If an admin added new data it should appear on both platforms. Tourist can add a attraction to their shopping cart which should show change on both platforms. A detailed page is offered per item.
 
