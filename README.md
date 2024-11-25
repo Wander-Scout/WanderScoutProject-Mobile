@@ -14,7 +14,7 @@ Heinrich Edric Damadika Suselo 2306256356
 
 <h2><b>Application description (name and purpose of the application)</b></h2>
 WanderScout is the ultimate travel companion for exploring the enchanting city of Yogyakarta. Designed to be more than just a guide, this app brings the latest updates through news, must-visit restaurants, and curated tourist attractions. Whether you're a local adventurer or an international traveler, WanderScout will help you uncover the hidden gems of Yogyakarta.
-
+<br>
 We offer a user-friendly platform, which not only simplifies trip planning but also introduces you to hidden gems and cultural wonders you won't find in any other platform. WanderScout ensures your journey to Yogyakarta is unforgettable. 
 
 <h2><b>List of modules implemented and the division of work among group members</b></h2>
