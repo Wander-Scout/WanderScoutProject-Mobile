@@ -85,7 +85,7 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <h2><b>Integration with the web service to connect to the web application created in the midterm project</b></h2>
 
 ## Overview
-This section describes the integration of our Flutter mobile application with the Django web application developed during the midterm project. The integration includes the `restaurant` and `tourist_attraction` apps, enabling dynamic data management and display within the mobile application.
+This section describes the integration of our Flutter mobile application with the Django web application developed during the midterm project. The integration includes apps like `restaurant` and `tourist_attraction` apps, enabling dynamic data management and display within the mobile application.
 
 ## Web Application Details
 - **Framework:** Django
@@ -122,7 +122,8 @@ This section describes the integration of our Flutter mobile application with th
 
 ---
 
-### Restaurant App
+### Example APPS
+## Restaurants App
 1. **API Endpoints**:
    - **GET `/api/`**: Fetches all restaurants.
    - **POST `/api/add_restaurant/`**: Adds a new restaurant.
@@ -137,7 +138,7 @@ This section describes the integration of our Flutter mobile application with th
 
 ---
 
-### Tourist Attraction App
+## Tourist Attraction App
 1. **API Endpoints**:
    - **GET `/api/`**: Fetches all tourist attractions.
    - **POST `/add_attraction/`**: Adds a new tourist attraction.
@@ -171,20 +172,3 @@ This section describes the integration of our Flutter mobile application with th
    - **Flutter:** `http` for requests, `provider` for state management.
    - **Django:** `djangorestframework` for APIs, `django-cors-headers` for cross-origin requests.
 
----
-
-## Testing the Integration
-- **Postman:** Used to validate API functionality independently.
-- **Flutter Unit Testing:** Ensures JSON parsing, HTTP response handling, and UI updates.
-- **Django Integration Testing:** Verifies endpoint logic, authentication, and security.
-
-## Future Improvements
-- Add search and filter options for both restaurants and tourist attractions to improve usability.
-- Implement paginated responses for better performance with large datasets.
-- Include user-uploaded images for dynamic and personalized content updates.
-- Enhance error handling in the mobile app for API response failures.
-
----
-
-## Summary
-This integration bridges the Django backend and Flutter frontend, enabling a dynamic and user-friendly application experience. The `restaurant` and `tourist_attraction` apps work seamlessly together, providing essential features like CRUD operations, role-based access, and real-time data updates. This project demonstrates the power of combining RESTful web services with a modern mobile app interface.
