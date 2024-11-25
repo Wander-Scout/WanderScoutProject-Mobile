@@ -43,8 +43,6 @@ Users can manage cart items and complete bookings with receipts, synced across w
 
 <h2><b>Roles or actors of the user application</b><h2>
 
----
-
 <h3>User Features</h3>
 
 <p>The mobile version of the platform is designed to provide users with seamless access to services and content through a responsive and intuitive interface. The following features are available to users:</p>
@@ -82,7 +80,7 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <p>Admins have the ability to view and respond to user reviews directly. This feature allows admins to address user feedback, provide clarifications, and foster positive interactions. By engaging with user reviews, admins enhance the overall user experience and ensure feedback is valued.</p>
 
 <h4>3. System Maintenance</h4>
-<p>Admins are responsible for ensuring the smooth operation of the mobile application. This includes performing system updates, troubleshooting issues, and managing security protocols. These tasks ensure the mobile platform is stable, secure, and efficient for all users.</p>
+<p>Admins are responsible for ensuring the smooth operation of the mobile application. This includes performing system updates, troubleshooting issues, and managing security protocols.</p>
 
 <h2><b>Integration with the web service to connect to the web application created in the midterm project</b></h2>
 
