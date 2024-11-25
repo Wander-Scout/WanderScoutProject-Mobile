@@ -42,17 +42,20 @@ Users can access local news, events, and travel advisories via an integrated RSS
 Users can manage cart items and complete bookings with receipts, synced across web and mobile apps. They can add either a restruant or a attraction and a rough price will be given to give an idea of what the cost would be.  
 
 <h2><b>Roles or actors of the user application</b><h2>
+
+---
+
 <h3>User Features</h3>
 
 <p>The mobile version of the platform is designed to provide users with seamless access to services and content through a responsive and intuitive interface. The following features are available to users:</p>
 
 <h4>1. Account Management</h4>  
-  <p>Users can create an account, log in, and securely manage their credentials through the integrated login and authentication system.</p>
+<p>Users can register for an account, log in, and update their profile details as needed.</p>
 
 <h4>2. Browse Content</h4>  
 <p>Users have access to a wide range of features, including:</p>
 <ul>
-  <li>Restaurants: Explore a curated list of restaurants with detailed descriptions, price ranges, and ambiance information.</li>
+  <li>Restaurants: Explore a curated list of restaurants with descriptions and price ranges.</li>
   <li>Tourist Attractions: Discover iconic landmarks and hidden gems, with detailed pages for each attraction.</li>
   <li>News: Stay informed with the latest news, travel advisories, and local events through an integrated RSS feed.</li>
 </ul>
@@ -63,7 +66,7 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <h4>4. Review Functionality</h4> 
 <p>Users can:</p>
 <ul>
-  <li>Submit reviews for restaurants and attractions.</li>
+  <li>Submit reviews for the website.</li>
   <li>View reviews submitted by other users.</li>
   <li>Read admin responses to their reviews.</li>
 </ul>
@@ -76,12 +79,9 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <p>Admins can add, edit, or delete platform content, including news articles, restaurant details, and tourist attractions. Any updates made by admins are reflected seamlessly on both the web and mobile applications, ensuring that users have access to accurate and consistent information.</p>
 
 <h4>2. Moderate and Respond to Customer Reviews</h4>
-<p>Admins have the ability to view and respond to user reviews directly through the mobile platform. This feature allows admins to address user feedback, provide clarifications, and foster positive interactions. By engaging with user reviews, admins enhance the overall user experience and ensure feedback is valued.</p>
+<p>Admins have the ability to view and respond to user reviews directly. This feature allows admins to address user feedback, provide clarifications, and foster positive interactions. By engaging with user reviews, admins enhance the overall user experience and ensure feedback is valued.</p>
 
-<h4>3. Real-Time Data Management</h4>
-<p>Admins can access and modify internal data structures, such as JSON and XML files. This capability ensures that data is accurately stored, transferred, and displayed across platforms, maintaining the application’s integrity and performance.</p>
-
-<h4>4. System Monitoring and Maintenance</h4>
+<h4>3. System Maintenance</h4>
 <p>Admins are responsible for ensuring the smooth operation of the mobile application. This includes performing system updates, troubleshooting issues, and managing security protocols. These tasks ensure the mobile platform is stable, secure, and efficient for all users.</p>
 
 <h2><b>Integration with the web service to connect to the web application created in the midterm project</b></h2>
