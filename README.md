@@ -110,17 +110,12 @@ This section describes the integration of our Flutter mobile application with th
    - Flutter parses this JSON data and uses widgets to dynamically update the user interface (e.g., display restaurant cards or show details).
 
 4. **User Interaction**:
-   - Users perform actions (e.g., add a new attraction, edit restaurant details).
+   - Admins perform actions (e.g., add a new attraction, edit restaurant details).
    - These actions trigger the appropriate HTTP requests to the backend.
 
 5. **Authentication**:
    - Protected endpoints (e.g., adding or deleting records) require user authentication.
    - The mobile app includes authentication tokens in its requests to access these endpoints.
-
-6. **Common Workflow Example**:
-   - A user opens the app → The app fetches a list of restaurants using the GET `/api/` endpoint.
-   - The user selects a restaurant → The app fetches detailed information from the GET `/restaurant/<uuid:restaurant_id>/data/` endpoint.
-   - The user adds a new restaurant → The app sends a POST request to `/api/add_restaurant/` with the required details.
 
 ---
 
@@ -130,12 +125,10 @@ This section describes the integration of our Flutter mobile application with th
    - **GET `/api/`**: Fetches all restaurants.
    - **POST `/api/add_restaurant/`**: Adds a new restaurant.
    - **DELETE `/api/delete_restaurant/<uuid:restaurant_id>/`**: Deletes a specific restaurant.
-   - **GET `/restaurant/<uuid:restaurant_id>/data/`**: Retrieves detailed data for a specific restaurant.
-   - **PUT `/restaurant/<uuid:restaurant_id>/update/`**: Updates the details of a restaurant.
 
 2. **Features Enabled**:
-   - Display restaurant data in a card-based layout.
-   - Add, update, and delete restaurant records dynamically.
+   - Display restaurant data.
+   - Add, update, and delete restaurant records dynamically (for admins).
    - Role-based access for admin functionalities.
 
 ---
@@ -145,32 +138,11 @@ This section describes the integration of our Flutter mobile application with th
    - **GET `/api/`**: Fetches all tourist attractions.
    - **POST `/add_attraction/`**: Adds a new tourist attraction.
    - **DELETE `/delete_attraction/<uuid:attraction_id>/`**: Deletes a specific tourist attraction.
-   - **PUT `/edit_attraction/<uuid:attraction_id>/`**: Updates the details of a tourist attraction.
-   - **GET `/attractions/<uuid:attraction_id>/`**: Retrieves detailed data for a specific tourist attraction.
+
 
 2. **Features Enabled**:
-   - Display tourist attraction data in a visually engaging format.
-   - Add, update, and delete tourist attraction records.
+   - Display tourist attraction.
+   - Add, update, and delete tourist attraction records (for admins).
    - Support for detailed views of specific attractions.
 
 ---
-
-### Common Integration Steps
-1. **Authentication**:
-   - The APIs are secured using Django's authentication system.
-   - Token-based authentication (e.g., JWT) is used to authenticate mobile app requests.
-
-2. **JSON Communication**:
-   - The mobile app sends HTTP requests and receives JSON responses.
-   - The app dynamically parses and displays the data using Flutter widgets.
-
-3. **Workflow**:
-   - **Fetching Data:** The mobile app retrieves lists and detailed records for restaurants and tourist attractions.
-   - **Adding Data:** New records can be added through POST requests.
-   - **Updating Data:** Existing records are modified using PUT requests.
-   - **Deleting Data:** Admin users can delete records using DELETE requests.
-
-4. **Dependencies**:
-   - **Flutter:** `http` for requests, `provider` for state management.
-   - **Django:** `djangorestframework` for APIs, `django-cors-headers` for cross-origin requests.
-
