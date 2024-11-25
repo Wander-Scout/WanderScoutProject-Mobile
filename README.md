@@ -38,7 +38,6 @@ Users can access local news, events, and travel advisories via an integrated RSS
 Users can manage cart items and complete bookings with receipts, synced across web and mobile apps. They can add either a restruant or a attraction and a rough price will be given to give an idea of what the cost would be.  
 
 <h2><b>Roles or actors of the user application</b><h2>
-
 <h3>User Features</h3>
 
 <p>The mobile version of the platform is designed to provide users with seamless access to services and content through a responsive and intuitive interface. The following features are available to users:</p>
@@ -51,7 +50,6 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <ul>
   <li>Restaurants: Explore a curated list of restaurants with detailed descriptions, price ranges, and ambiance information.</li>
   <li>Tourist Attractions: Discover iconic landmarks and hidden gems, with detailed pages for each attraction.</li>
-  <li>Photo Gallery: Browse visually engaging images of events and locations in Yogyakarta sourced via RSS feeds.</li>
   <li>News: Stay informed with the latest news, travel advisories, and local events through an integrated RSS feed.</li>
 </ul>
 
@@ -77,7 +75,7 @@ Users can manage cart items and complete bookings with receipts, synced across w
 <p>Admins have the ability to view and respond to user reviews directly through the mobile platform. This feature allows admins to address user feedback, provide clarifications, and foster positive interactions. By engaging with user reviews, admins enhance the overall user experience and ensure feedback is valued.</p>
 
 <h4>3. Real-Time Data Management</h4>
-<p>Admins can access and modify internal data structures, such as JSON and XML files, directly from the mobile interface. This capability ensures that data is accurately stored, transferred, and displayed across platforms, maintaining the application’s integrity and performance.</p>
+<p>Admins can access and modify internal data structures, such as JSON and XML files. This capability ensures that data is accurately stored, transferred, and displayed across platforms, maintaining the application’s integrity and performance.</p>
 
 <h4>4. System Monitoring and Maintenance</h4>
 <p>Admins are responsible for ensuring the smooth operation of the mobile application. This includes performing system updates, troubleshooting issues, and managing security protocols. These tasks ensure the mobile platform is stable, secure, and efficient for all users.</p>
