@@ -27,7 +27,7 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              'Welcome to WANDERSCOUT',
+              'Explore Jogja With Us!',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,

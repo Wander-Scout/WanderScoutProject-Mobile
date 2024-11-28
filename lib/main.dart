@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wanderscout/davin/screens/menu.dart';
-
+import 'package:wanderscout/davin/screens/login.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -10,8 +11,10 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+Widget build(BuildContext context) {
+  return Provider<CookieRequest>(
+    create: (_) => CookieRequest(), // Initialize CookieRequest
+    child: MaterialApp(
       title: 'Wanderscout',
       theme: ThemeData(
         brightness: Brightness.light,
@@ -30,7 +33,9 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFF3B82F6), // Tailwind's bg-blue-500
         ),
       ),
-      home: MyHomePage(),
-    );
-  }
+      home: LoginPage(), // Replace with your login or home screen
+    ),
+  );
+}
+
 }
