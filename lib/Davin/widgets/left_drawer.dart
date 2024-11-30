@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:wanderscout/kez/screens/cart_screen.dart';
+import 'package:wanderscout/davin/screens/login.dart';
+import 'package:wanderscout/davin/screens/tourist_attraction_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -46,7 +51,12 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.place, color: Colors.black),
             title: const Text('Tourist Attractions'),
-            onTap: () {},
+              onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TouristAttractionScreen()),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.restaurant, color: Colors.black),
@@ -61,14 +71,45 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.shopping_cart, color: Colors.black),
             title: const Text('Shopping Cart'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartScreen()),
+              );
+            },
           ),
           const Divider(),
 
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.black),
             title: const Text('Logout'),
-            onTap: () {},
+            onTap: () async {
+              final request = Provider.of<CookieRequest>(context, listen: false);
+              const logoutUrl = "http://127.0.0.1:8000/authentication/flutter_logout/";
+
+              final response = await request.logout(logoutUrl);
+
+              if (context.mounted) {
+                String message = response["message"];
+                if (response['status']) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("$message Goodbye"),
+                    ),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(message),
+                    ),
+                  );
+                }
+              }
+            },
           ),
         ],
       ),
