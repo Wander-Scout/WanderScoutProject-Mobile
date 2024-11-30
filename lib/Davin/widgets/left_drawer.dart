@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wanderscout/ella/screens/list_review.dart';
+import 'package:wanderscout/ella/screens/reviewentry_form.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -41,7 +43,28 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.comment, color: Colors.black),
             title: const Text('Customer Reviews'),
-            onTap: () {},
+            onTap: () {
+              // Redirect to Review List page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ReviewListPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_comment, color: Colors.black),
+            title: const Text('Add a Review'),
+            onTap: () {
+              // Redirect to Review Entry Form page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ReviewEntryFormPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.place, color: Colors.black),
@@ -64,11 +87,12 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {},
           ),
           const Divider(),
-
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.black),
             title: const Text('Logout'),
-            onTap: () {},
+            onTap: () {
+              // Handle logout functionality here
+            },
           ),
         ],
       ),
