@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:wanderscout/davin/widgets/left_drawer.dart';
 import 'package:wanderscout/ella/screens/list_review.dart'; // Import the ReviewListPage
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class ReviewEntryFormPage extends StatefulWidget {
   const ReviewEntryFormPage({super.key});
@@ -17,10 +17,37 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
   String _reviewText = "";
   int _rating = 1;
 
+  // Function to submit the review using the authentication token
+  Future<void> submitReview(String reviewText, int rating) async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'auth_token'); // Retrieve the token
+
+
+    if (token == null) {
+      throw Exception('Authentication token not found. Please log in.');
+    }
+
+    final url = Uri.parse('http://127.0.0.1:8000/apireview/');
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'review_text': reviewText,
+        'rating': rating,
+      }),
+    );
+
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      throw Exception('Failed to submit review: ${response.body}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
+    // Removed CookieRequest since we're using token authentication
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -93,39 +120,22 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                       if (_formKey.currentState!.validate()) {
                         try {
                           // Send data to the backend
-                          final response = await request.postJson(
-                            "http://127.0.0.1:8000/create-flutter/",
-                            jsonEncode(<String, dynamic>{
-                              'review_text': _reviewText,
-                              'rating': _rating,
-                            }),
-                          );
+                          await submitReview(_reviewText, _rating);
 
                           if (context.mounted) {
-                            if (response['status'] == 'success') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Review added successfully!"),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                              // Redirect to Review List Page
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ReviewListPage(),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "Failed to add review: ${response['message']}",
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Review added successfully!"),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            // Redirect to Review List Page
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ReviewListPage(),
+                              ),
+                            );
                           }
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
