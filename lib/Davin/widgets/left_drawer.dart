@@ -6,6 +6,7 @@ import 'package:wanderscout/davin/screens/login.dart';
 import 'package:wanderscout/davin/screens/tourist_attraction_list.dart';
 import 'package:wanderscout/ella/screens/list_review.dart';
 import 'package:wanderscout/ella/screens/reviewentry_form.dart';
+import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -75,14 +76,20 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TouristAttractionScreen()),
+                MaterialPageRoute(
+                    builder: (context) => TouristAttractionScreen()),
               );
             },
           ),
           ListTile(
             leading: const Icon(Icons.restaurant, color: Colors.black),
             title: const Text('Restaurants'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RestaurantListScreen()),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.newspaper, color: Colors.black),
@@ -104,15 +111,18 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout, color: Colors.black),
             title: const Text('Logout'),
             onTap: () async {
-              final request = Provider.of<CookieRequest>(context, listen: false);
-              const logoutUrl = "http://127.0.0.1:8000/authentication/flutter_logout/";
+              final request =
+                  Provider.of<CookieRequest>(context, listen: false);
+              const logoutUrl =
+                  "http://127.0.0.1:8000/authentication/flutter_logout/";
 
               try {
                 final response = await request.logout(logoutUrl);
 
                 if (context.mounted) {
                   if (response != null && response['status'] != null) {
-                    String message = response["message"] ?? "Unexpected error occurred.";
+                    String message =
+                        response["message"] ?? "Unexpected error occurred.";
                     if (response['status']) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -121,7 +131,8 @@ class LeftDrawer extends StatelessWidget {
                       );
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
