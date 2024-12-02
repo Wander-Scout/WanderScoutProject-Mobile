@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http; // For API requests
-import 'dart:convert'; // For JSON decoding
-import '../services/api_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../models/restaurant.dart'; // Import your Restaurant model
 import 'package:wanderscout/davin/widgets/left_drawer.dart'; // Import LeftDrawer
 
 class RestaurantListScreen extends StatefulWidget {
@@ -11,24 +11,22 @@ class RestaurantListScreen extends StatefulWidget {
 }
 
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
-  final ApiService apiService = ApiService();
-  final FlutterSecureStorage _storage =
-      const FlutterSecureStorage(); // For secure token storage
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  List<dynamic> displayedRestaurants = [];
-  List<dynamic> allRestaurants = [];
-  List<dynamic> filteredRestaurants = []; // Stores restaurants after filtering
+  List<Restaurant> displayedRestaurants = [];
+  List<Restaurant> allRestaurants = [];
+  List<Restaurant> filteredRestaurants = [];
   final int pageSize = 10;
   bool isLoading = false;
 
-  String selectedFoodPreference = 'All'; // Default filter value
-  List<String> foodPreferences = ['All']; // Dropdown options
-  String searchQuery = ''; // Holds the search query
+  String selectedFoodPreference = 'All';
+  List<String> foodPreferences = ['All'];
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    fetchRestaurants(); // Fetch data on screen load
+    fetchRestaurants();
   }
 
   Future<void> fetchRestaurants() async {
@@ -40,44 +38,45 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       }
 
       // Fetch restaurants with token
-      final url = Uri.parse('http://127.0.0.1:8000/restaurant/api/');
+      final url =
+          Uri.parse('http://127.0.0.1:8000/restaurant/api_restaurant/');
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Token $token', // Include the token in the header
+          'Authorization': 'Token $token',
         },
       );
 
       // Handle the API response
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final restaurantList = data['restaurants'] ?? data as List;
+        final List<dynamic> data = jsonDecode(response.body);
+
         setState(() {
-          allRestaurants = restaurantList.map((item) {
-            return item['fields'] ??
-                item; // Access 'fields' or the flat structure
-          }).toList();
+          allRestaurants = data
+              .map((item) => Restaurant.fromJson(item))
+              .toList();
 
           // Extract unique food preferences for filtering
           final preferences = allRestaurants
-              .map((restaurant) => restaurant['food_preference'] as String?)
-              .where((preference) => preference != null)
-              .cast<String>() // Cast to non-nullable String
+              .map((restaurant) => restaurant.foodPreference)
               .toSet()
               .toList();
-          foodPreferences = ['All', ...preferences];
+          foodPreferences = [
+            'All',
+            ...preferences.map((e) => e.displayName).toList()
+          ];
 
-          filteredRestaurants =
-              List.from(allRestaurants); // Initially, no filter applied
+          filteredRestaurants = List.from(allRestaurants);
           displayedRestaurants = filteredRestaurants.take(pageSize).toList();
         });
       } else if (response.statusCode == 401) {
         throw Exception('Unauthorized. Please log in again.');
       } else {
-        throw Exception('Failed to fetch restaurants: ${response.statusCode}');
+        throw Exception(
+            'Failed to fetch restaurants: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error fetching restaurants: $error'); // Log errors for debugging
+      print('Error fetching restaurants: $error');
     }
   }
 
@@ -86,12 +85,10 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       // Apply both the food preference filter and search query
       filteredRestaurants = allRestaurants.where((restaurant) {
         final matchesFoodPreference = selectedFoodPreference == 'All' ||
-            restaurant['food_preference'] == selectedFoodPreference;
-        final matchesSearchQuery = restaurant['name']
-                ?.toString()
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase()) ??
-            false;
+            restaurant.foodPreference.displayName == selectedFoodPreference;
+        final matchesSearchQuery = restaurant.name
+            .toLowerCase()
+            .contains(searchQuery.toLowerCase());
         return matchesFoodPreference && matchesSearchQuery;
       }).toList();
 
@@ -103,11 +100,11 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   void loadMoreRestaurants() {
     if (displayedRestaurants.length >= filteredRestaurants.length ||
         isLoading) {
-      return; // Stop loading if all data is displayed or already loading
+      return;
     }
 
     setState(() {
-      isLoading = true; // Set loading state
+      isLoading = true;
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -117,7 +114,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           .toList();
       setState(() {
         displayedRestaurants.addAll(nextItems);
-        isLoading = false; // Reset loading state
+        isLoading = false;
       });
     });
   }
@@ -126,9 +123,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Restaurant List'),
+        title: const Text('Restaurants'),
       ),
-      drawer: const LeftDrawer(), // Add LeftDrawer here
+      drawer: const LeftDrawer(),
       body: Column(
         children: [
           // Search and Filter Row
@@ -141,10 +138,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                   flex: 2,
                   child: TextField(
                     onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                        filterRestaurants(); // Filter as the user types
-                      });
+                      searchQuery = value;
+                      filterRestaurants();
                     },
                     decoration: InputDecoration(
                       labelText: 'Search by name...',
@@ -170,10 +165,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                         .toList(),
                     onChanged: (value) {
                       if (value != null) {
-                        setState(() {
-                          selectedFoodPreference = value;
-                          filterRestaurants(); // Filter when a new preference is selected
-                        });
+                        selectedFoodPreference = value;
+                        filterRestaurants();
                       }
                     },
                   ),
@@ -189,7 +182,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     onNotification: (ScrollNotification scrollInfo) {
                       if (scrollInfo.metrics.pixels ==
                           scrollInfo.metrics.maxScrollExtent) {
-                        loadMoreRestaurants(); // Load more data when scrolled to bottom
+                        loadMoreRestaurants();
                       }
                       return false;
                     },
@@ -201,19 +194,6 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                         if (index < displayedRestaurants.length) {
                           final restaurant = displayedRestaurants[index];
 
-                          // Safely access fields with default values
-                          final name = restaurant['name'] ?? 'No Name';
-                          final foodPreference =
-                              restaurant['food_preference'] ?? 'Unknown';
-                          final averagePrice =
-                              restaurant['average_price']?.toString() ?? 'N/A';
-                          final rating =
-                              restaurant['rating']?.toString() ?? 'N/A';
-                          final atmosphere =
-                              restaurant['atmosphere'] ?? 'Unknown';
-                          final foodVariety =
-                              restaurant['food_variety'] ?? 'N/A';
-
                           return Card(
                             elevation: 4,
                             margin: const EdgeInsets.only(bottom: 16.0),
@@ -222,11 +202,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                 children: [
                                   // Restaurant Name
                                   Text(
-                                    name,
+                                    restaurant.name,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -236,39 +217,43 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                                   const SizedBox(height: 8),
                                   // Rating
                                   Text(
-                                    'Rating: $rating / 5',
-                                    style: const TextStyle(color: Colors.grey),
+                                    'Rating: ${restaurant.rating} / 5',
+                                    style: const TextStyle(
+                                        color: Colors.grey),
                                   ),
                                   const SizedBox(height: 4),
                                   // Average Price
                                   Text(
-                                    'Average Price: Rp $averagePrice',
-                                    style: const TextStyle(color: Colors.grey),
+                                    'Average Price: Rp ${restaurant.averagePrice}',
+                                    style: const TextStyle(
+                                        color: Colors.grey),
                                   ),
                                   const SizedBox(height: 4),
                                   // Food Preference
                                   Text(
-                                    'Food Preference: $foodPreference',
-                                    style: const TextStyle(color: Colors.grey),
+                                    'Food Preference: ${restaurant.foodPreference.displayName}',
+                                    style: const TextStyle(
+                                        color: Colors.grey),
                                   ),
                                   const SizedBox(height: 4),
                                   // Atmosphere
                                   Text(
-                                    'Atmosphere: $atmosphere',
-                                    style: const TextStyle(color: Colors.grey),
+                                    'Atmosphere: ${restaurant.atmosphere.displayName}',
+                                    style: const TextStyle(
+                                        color: Colors.grey),
                                   ),
                                   const SizedBox(height: 4),
                                   // Food Variety
                                   Text(
-                                    'Food Variety: $foodVariety',
-                                    style: const TextStyle(color: Colors.grey),
+                                    'Food Variety: ${restaurant.foodVariety}',
+                                    style: const TextStyle(
+                                        color: Colors.grey),
                                   ),
                                 ],
                               ),
                             ),
                           );
                         } else {
-                          // Show loading spinner when more data is being loaded
                           return const Center(
                               child: CircularProgressIndicator());
                         }
