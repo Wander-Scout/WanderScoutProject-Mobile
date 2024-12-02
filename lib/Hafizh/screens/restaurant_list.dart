@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http; // For API requests
+import 'dart:convert'; // For JSON decoding
 import '../services/api_service.dart';
 import 'package:wanderscout/davin/widgets/left_drawer.dart'; // Import LeftDrawer
 
@@ -9,6 +12,9 @@ class RestaurantListScreen extends StatefulWidget {
 
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
   final ApiService apiService = ApiService();
+  final FlutterSecureStorage _storage =
+      const FlutterSecureStorage(); // For secure token storage
+
   List<dynamic> displayedRestaurants = [];
   List<dynamic> allRestaurants = [];
   List<dynamic> filteredRestaurants = []; // Stores restaurants after filtering
@@ -27,29 +33,49 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   Future<void> fetchRestaurants() async {
     try {
-      final data = await apiService.fetchRestaurants(); // Fetch API data
+      // Retrieve the authentication token
+      final token = await _storage.read(key: 'auth_token');
+      if (token == null) {
+        throw Exception('Authentication token not found. Please log in.');
+      }
 
-      final restaurantList =
-          data['restaurants'] ?? data as List; // Handle both cases
-      setState(() {
-        allRestaurants = restaurantList.map((item) {
-          return item['fields'] ??
-              item; // Access 'fields' or the flat structure
-        }).toList();
+      // Fetch restaurants with token
+      final url = Uri.parse('http://127.0.0.1:8000/restaurant/api/');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Token $token', // Include the token in the header
+        },
+      );
 
-        // Extract unique food preferences for filtering
-        final preferences = allRestaurants
-            .map((restaurant) => restaurant['food_preference'] as String?)
-            .where((preference) => preference != null)
-            .cast<String>() // Cast to non-nullable String
-            .toSet()
-            .toList();
-        foodPreferences = ['All', ...preferences];
+      // Handle the API response
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final restaurantList = data['restaurants'] ?? data as List;
+        setState(() {
+          allRestaurants = restaurantList.map((item) {
+            return item['fields'] ??
+                item; // Access 'fields' or the flat structure
+          }).toList();
 
-        filteredRestaurants =
-            List.from(allRestaurants); // Initially, no filter applied
-        displayedRestaurants = filteredRestaurants.take(pageSize).toList();
-      });
+          // Extract unique food preferences for filtering
+          final preferences = allRestaurants
+              .map((restaurant) => restaurant['food_preference'] as String?)
+              .where((preference) => preference != null)
+              .cast<String>() // Cast to non-nullable String
+              .toSet()
+              .toList();
+          foodPreferences = ['All', ...preferences];
+
+          filteredRestaurants =
+              List.from(allRestaurants); // Initially, no filter applied
+          displayedRestaurants = filteredRestaurants.take(pageSize).toList();
+        });
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized. Please log in again.');
+      } else {
+        throw Exception('Failed to fetch restaurants: ${response.statusCode}');
+      }
     } catch (error) {
       print('Error fetching restaurants: $error'); // Log errors for debugging
     }
