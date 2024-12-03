@@ -1,134 +1,188 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:wanderscout/Davin/widgets/left_drawer.dart';
-import 'package:wanderscout/kez/models/cart_item.dart'; // Adjust the import if necessary
+import 'package:wanderscout/kez/screens/receipt_screen.dart';
+import 'package:wanderscout/kez/services/cart_service.dart';
+import 'package:wanderscout/kez/models/cart_item.dart'; // Import the models
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  const CartScreen({Key? key}) : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  List<Item> _cartItems = []; // Full list of cart items
+  List<Item> _displayedItems = []; // Items currently displayed
+  double _totalCost = 0.0;
+  bool _isLoading = true; // Initial loading
+  bool _isFetchingMore = false; // Loading during scroll
+  int _itemsToShow = 10; // Number of items to display per batch
 
-  Future<CartDetails> fetchCart() async {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCart();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  /// Fetch cart items from the server
+  Future<void> _fetchCart() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
-      // Retrieve the authentication token
-      final token = await _storage.read(key: 'auth_token');
-
-      if (token == null) {
-        throw Exception('Authentication token not found. Please log in.');
-      }
-
-      print('Token being sent: $token');
-
-      // Make the HTTP GET request to fetch the cart
-      final url = Uri.parse('http://localhost:8000/cart/api/cart/');
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Token $token',
-        },
-      );
-
-      print('Request headers: ${response.request?.headers}');
-      print('Response body: ${response.body}');
-
-      // Handle the response
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        return CartDetails.fromJson(jsonResponse);
-      } else if (response.statusCode == 401) {
-        throw Exception('Unauthorized. Please log in again.');
-      } else {
-        throw Exception('Failed to fetch cart: ${response.statusCode}');
-      }
+      final cartDetails = await CartService.fetchCartItems(); // Use CartDetails model
+      setState(() {
+        _cartItems = cartDetails.cart.items; // Extract items
+        _totalCost = _cartItems.fold(
+          0.0,
+          (sum, item) => sum + (item.price * item.quantity),
+        ); // Calculate total cost
+        _displayedItems = _cartItems.take(_itemsToShow).toList(); // Show initial items
+        _isLoading = false;
+      });
     } catch (e) {
-      throw Exception('Error fetching cart: $e');
+      print('Error fetching cart: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+
+  /// Handle scroll listener to load more items
+  void _scrollListener() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
+        !_isFetchingMore) {
+      _loadMoreItems();
+    }
+  }
+
+  /// Load more items when scrolling down
+  void _loadMoreItems() {
+    if (_displayedItems.length >= _cartItems.length) {
+      return; // No more items to load
+    }
+
+    setState(() {
+      _isFetchingMore = true; // Start showing the loading spinner
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        final nextItems = _cartItems.skip(_displayedItems.length).take(_itemsToShow).toList();
+        _displayedItems.addAll(nextItems);
+        _isFetchingMore = false; // Stop showing the loading spinner
+      });
+    });
+  }
+
+  /// Handle removing an item
+  Future<void> _removeItem(String itemId) async {
+    try {
+      await CartService.removeFromCart(itemId);
+      setState(() {
+        _cartItems.removeWhere((item) => item.id == itemId);
+        _displayedItems = _cartItems.take(_displayedItems.length).toList();
+        _totalCost = _cartItems.fold(
+          0.0,
+          (sum, item) => sum + (item.price * item.quantity),
+        );
+      });
+    } catch (e) {
+      print('Error removing item: $e');
+    }
+  }
+
+  /// Handle checkout
+ Future<void> _checkout() async {
+  try {
+    final receipt = await CartService.checkout();
+
+    // Navigate to ReceiptScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReceiptScreen(
+          bookingId: receipt.bookingId,
+          services: receipt.items.map((item) => item.name).toList(),
+          totalPrice: receipt.totalPrice, // Ensure this is a double
+        ),
+      ),
+    );
+  } catch (e) {
+    print('Checkout error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Checkout failed: $e')),
+    );
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Cart'),
-      ),
-      drawer: const LeftDrawer(),
-      body: FutureBuilder(
-        future: fetchCart(),
-        builder: (context, AsyncSnapshot<CartDetails> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.cart.items.isEmpty) {
-            return const Center(
-              child: Text(
-                'No items in the cart.',
-                style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
-              ),
-            );
-          } else {
-            final cartItems = snapshot.data!.cart.items;
-            return ListView.builder(
-              itemCount: cartItems.length,
-              itemBuilder: (_, index) {
-                final item = cartItems[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  padding: const EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      const BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8.0,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.name,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
+      appBar: AppBar(title: const Text('Your Cart')),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: _displayedItems.length + 1, // Add 1 for the loading spinner
+                    itemBuilder: (_, index) {
+                      if (index == _displayedItems.length) {
+                        // Show loading spinner at the bottom if fetching more items
+                        return _isFetchingMore
+                            ? const Center(child: CircularProgressIndicator())
+                            : const SizedBox.shrink();
+                      }
+
+                      final item = _displayedItems[index];
+                      return ListTile(
+                        title: Text(item.name),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Price: Rp ${item.price} x ${item.quantity}'),
+                            Text(item.isWeekend ? 'Weekend Special' : 'Regular'),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text("Price: IDR ${item.price}"),
-                      const SizedBox(height: 10),
-                      Text("Quantity: ${item.quantity}"),
-                      const SizedBox(height: 10),
-                      Text(item.isWeekend ? 'Weekend Special' : 'Regular'),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _removeItem(item.id),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('Total: Rp $_totalCost'),
                       const SizedBox(height: 10),
                       ElevatedButton(
-                        onPressed: () {
-                          // Handle item removal or any other functionality
-                        },
-                        child: const Text('Remove from Cart'),
+                        onPressed: _cartItems.isEmpty ? null : _checkout,
+                        child: const Text('Checkout'),
                       ),
                     ],
                   ),
-                );
-              },
-            );
-          }
-        },
-      ),
+                ),
+              ],
+            ),
     );
   }
 }

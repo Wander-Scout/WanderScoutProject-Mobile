@@ -21,4 +21,13 @@ class ApiService {
     return _httpService.get(url: url, headers: headers, queryParams: queryParams);
   }
 
+
+  Future<http.Response> post({
+    required String url,
+    Map<String, dynamic>? body,
+  }) async {
+    final headers = await _getHeaders();
+    return _httpService.post(url: url, headers: headers, body: body ?? {});
+  }
+
 }
