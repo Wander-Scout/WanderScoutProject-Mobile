@@ -1,7 +1,11 @@
+// lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:wanderscout/davin/screens/login.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
+
 void main() {
   runApp(const MyApp());
 }
@@ -11,31 +15,37 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-Widget build(BuildContext context) {
-  return Provider<CookieRequest>(
-    create: (_) => CookieRequest(), // Initialize CookieRequest
-    child: MaterialApp(
-      title: 'Wanderscout',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFF1E3A8A), // Tailwind's bg-blue-900
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1E3A8A),
-          foregroundColor: Colors.white,
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<CookieRequest>(
+          create: (_) => CookieRequest(), // Initialize CookieRequest
         ),
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Colors.black),
-          bodyLarge: TextStyle(color: Colors.black),
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(), // Initialize UserProvider
         ),
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: const Color(0xFF1E3A8A), // bg-blue-900
-          secondary: const Color(0xFF3B82F6), // Tailwind's bg-blue-500
+      ],
+      child: MaterialApp(
+        title: 'Wanderscout',
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: const Color(0xFF1E3A8A), // Tailwind's bg-blue-900
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF1E3A8A),
+            foregroundColor: Colors.white,
+          ),
+          textTheme: const TextTheme(
+            bodyMedium: TextStyle(color: Colors.black),
+            bodyLarge: TextStyle(color: Colors.black),
+          ),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: const Color(0xFF1E3A8A), // bg-blue-900
+            secondary: const Color(0xFF3B82F6), // Tailwind's bg-blue-500
+          ),
         ),
+        home: const LoginPage(), // Replace with your login or home screen
       ),
-      home: LoginPage(), // Replace with your login or home screen
-    ),
-  );
-}
-
+    );
+  }
 }
