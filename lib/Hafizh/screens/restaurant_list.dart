@@ -1,8 +1,7 @@
+// hafizh/screens/restaurant_list.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../models/restaurant.dart'; // Import your Restaurant model
+import '../models/restaurant.dart'; // Adjust the path if necessary
+import '../services/restaurant_api.dart'; // Import RestaurantApi
 import 'package:wanderscout/davin/widgets/left_drawer.dart'; // Import LeftDrawer
 
 class RestaurantListScreen extends StatefulWidget {
@@ -11,7 +10,7 @@ class RestaurantListScreen extends StatefulWidget {
 }
 
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final RestaurantApi _restaurantApi = RestaurantApi(); // Use RestaurantApi
 
   List<Restaurant> displayedRestaurants = [];
   List<Restaurant> allRestaurants = [];
@@ -31,50 +30,25 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   Future<void> fetchRestaurants() async {
     try {
-      // Retrieve the authentication token
-      final token = await _storage.read(key: 'auth_token');
-      if (token == null) {
-        throw Exception('Authentication token not found. Please log in.');
-      }
+      // Fetch restaurants using RestaurantApi
+      final restaurants = await _restaurantApi.fetchRestaurants();
 
-      // Fetch restaurants with token
-      final url =
-          Uri.parse('http://127.0.0.1:8000/restaurant/api_restaurant/');
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Token $token',
-        },
-      );
+      setState(() {
+        allRestaurants = restaurants;
 
-      // Handle the API response
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        // Extract unique food preferences for filtering
+        final preferences = allRestaurants
+            .map((restaurant) => restaurant.foodPreference)
+            .toSet()
+            .toList();
+        foodPreferences = [
+          'All',
+          ...preferences.map((e) => e.displayName).toList()
+        ];
 
-        setState(() {
-          allRestaurants = data
-              .map((item) => Restaurant.fromJson(item))
-              .toList();
-
-          // Extract unique food preferences for filtering
-          final preferences = allRestaurants
-              .map((restaurant) => restaurant.foodPreference)
-              .toSet()
-              .toList();
-          foodPreferences = [
-            'All',
-            ...preferences.map((e) => e.displayName).toList()
-          ];
-
-          filteredRestaurants = List.from(allRestaurants);
-          displayedRestaurants = filteredRestaurants.take(pageSize).toList();
-        });
-      } else if (response.statusCode == 401) {
-        throw Exception('Unauthorized. Please log in again.');
-      } else {
-        throw Exception(
-            'Failed to fetch restaurants: ${response.statusCode}');
-      }
+        filteredRestaurants = List.from(allRestaurants);
+        displayedRestaurants = filteredRestaurants.take(pageSize).toList();
+      });
     } catch (error) {
       print('Error fetching restaurants: $error');
     }
@@ -117,6 +91,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         isLoading = false;
       });
     });
+  }
+
+  String getImageForFoodPreference(String? foodPreference) {
+    final typeValue =
+        foodPreference?.toLowerCase().replaceAll(' ', '') ?? 'placeholder';
+    return 'lib/static/food_pref/$typeValue.jpg';
   }
 
   @override
@@ -198,56 +178,77 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                             elevation: 4,
                             margin: const EdgeInsets.only(bottom: 16.0),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Restaurant Name
-                                  Text(
-                                    restaurant.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
+                                  // Image Section
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      getImageForFoodPreference(
+                                          restaurant.foodPreference.displayName),
+                                      fit: BoxFit.cover,
+                                      width: 250, // Adjust width as needed
+                                      height: 250, // Adjust height as needed
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
-                                  // Rating
-                                  Text(
-                                    'Rating: ${restaurant.rating} / 5',
-                                    style: const TextStyle(
-                                        color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  // Average Price
-                                  Text(
-                                    'Average Price: Rp ${restaurant.averagePrice}',
-                                    style: const TextStyle(
-                                        color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  // Food Preference
-                                  Text(
-                                    'Food Preference: ${restaurant.foodPreference.displayName}',
-                                    style: const TextStyle(
-                                        color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  // Atmosphere
-                                  Text(
-                                    'Atmosphere: ${restaurant.atmosphere.displayName}',
-                                    style: const TextStyle(
-                                        color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  // Food Variety
-                                  Text(
-                                    'Food Variety: ${restaurant.foodVariety}',
-                                    style: const TextStyle(
-                                        color: Colors.grey),
+                                  const SizedBox(width: 16),
+                                  // Details Section
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Restaurant Name
+                                        Text(
+                                          restaurant.name,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        // Rating
+                                        Text(
+                                          'Rating: ${restaurant.rating} / 5',
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        // Average Price
+                                        Text(
+                                          'Average Price: Rp ${restaurant.averagePrice}',
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        // Food Preference
+                                        Text(
+                                          'Food Preference: ${restaurant.foodPreference.displayName}',
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        // Atmosphere
+                                        Text(
+                                          'Atmosphere: ${restaurant.atmosphere.displayName}',
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        // Food Variety
+                                        Text(
+                                          'Food Variety: ${restaurant.foodVariety}',
+                                          style: const TextStyle(
+                                              color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
