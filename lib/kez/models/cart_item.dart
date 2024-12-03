@@ -83,3 +83,32 @@ class Item {
         "quantity": quantity,
     };
 }
+
+class Receipt {
+  String bookingId;
+  double totalPrice;
+  List<Item> items;
+
+  Receipt({
+    required this.bookingId,
+    required this.totalPrice,
+    required this.items,
+  });
+
+  factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
+        bookingId: json['booking_id']?.toString() ?? 'Unknown', // Handle null booking_id
+        totalPrice: json['total_price'] is double
+            ? json['total_price']
+            : double.parse(json['total_price'].toString()),
+        items: List<Item>.from(json['items'].map((x) => Item.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'booking_id': bookingId,
+        'total_price': totalPrice,
+        'items': List<dynamic>.from(items.map((x) => x.toJson())),
+      };
+}
+
+
+
