@@ -1,8 +1,7 @@
-// tourist_attraction_screen.dart
 import 'package:flutter/material.dart';
 import 'package:wanderscout/Davin/models/touristattraction.dart';
-import 'package:wanderscout/davin/widgets/left_drawer.dart'; // Adjust the path
-import 'package:wanderscout/Davin/API/tourist_api.dart'; // Import the API class
+import 'package:wanderscout/davin/widgets/left_drawer.dart';
+import 'package:wanderscout/Davin/API/tourist_api.dart';
 
 class TouristAttractionScreen extends StatefulWidget {
   const TouristAttractionScreen({super.key});
@@ -14,7 +13,7 @@ class TouristAttractionScreen extends StatefulWidget {
 
 class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
   final ScrollController _scrollController = ScrollController();
-  final TouristAttractionApi _api = TouristAttractionApi(); // Use the API class
+  final TouristAttractionApi _api = TouristAttractionApi();
 
   List<TouristAttraction> _displayedAttractions = [];
   List<TouristAttraction> _allAttractions = [];
@@ -33,7 +32,6 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     super.initState();
     _fetchTouristAttractions();
 
-    // Add listener for infinite scrolling
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
@@ -60,9 +58,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
       setState(() {
         _allAttractions.addAll(fetchedAttractions);
 
-        // Populate available types for filtering
         final types = _allAttractions
-            .map((attraction) => attraction.type)
+            .map((attraction) => attraction.type.split(',').first.trim())
             .toSet()
             .toList();
         _availableTypes = ['All', ...types];
@@ -91,7 +88,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
         final matchesSearchQuery =
             attraction.nama.toLowerCase().contains(_searchQuery.toLowerCase());
         final matchesType =
-            _selectedType == 'All' || attraction.type == _selectedType;
+            _selectedType == 'All' || attraction.type.split(',').first.trim() == _selectedType;
         return matchesSearchQuery && matchesType;
       }).toList();
 
@@ -124,8 +121,16 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     });
   }
 
+  String getImageForAttractionType(String? type) {
+    final firstCategory = type?.split(',').first.trim().replaceAll(' ', '').toLowerCase() ?? 'placeholder';
+    return 'lib/static/attractions/$firstCategory.png';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isSmallScreen = screenWidth < 600;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tourist Attractions'),
@@ -133,12 +138,10 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
       drawer: const LeftDrawer(),
       body: Column(
         children: [
-          // Search and Filter Row
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                // Search Bar
                 Expanded(
                   flex: 2,
                   child: TextField(
@@ -156,7 +159,6 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Filter Dropdown
                 Expanded(
                   flex: 1,
                   child: DropdownButton<String>(
@@ -181,7 +183,6 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
               ],
             ),
           ),
-          // Attractions List
           Expanded(
             child: _allAttractions.isEmpty && !_isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -195,58 +196,63 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                     },
                     child: ListView.builder(
                       controller: _scrollController,
+                      padding: const EdgeInsets.all(16.0),
                       itemCount:
                           _displayedAttractions.length + (_isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index < _displayedAttractions.length) {
                           final attraction = _displayedAttractions[index];
 
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 8.0,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
+                          return Card(
+                            elevation: 4,
+                            margin: const EdgeInsets.only(bottom: 16.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  attraction.nama,
-                                  style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text("Rating: ${attraction.voteAverage}"),
-                                const SizedBox(height: 10),
-                                Text("Type: ${attraction.type}"),
-                                const SizedBox(height: 10),
-                                Text(
-                                    "Weekday Price: IDR ${attraction.htmWeekday}"),
-                                const SizedBox(height: 10),
-                                Text(
-                                    "Weekend Price: IDR ${attraction.htmWeekend}"),
-                                const SizedBox(height: 10),
-                                Text(
-                                    "Description: ${attraction.description}"),
-                                const SizedBox(height: 10),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // Handle any action, e.g., navigate to details page
-                                  },
-                                  child: const Text('View Details'),
-                                ),
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: isSmallScreen
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.asset(
+                                            getImageForAttractionType(
+                                                attraction.type),
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: 200,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        buildAttractionDetails(attraction),
+                                      ],
+                                    )
+                                  : Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.asset(
+                                            getImageForAttractionType(
+                                                attraction.type),
+                                            fit: BoxFit.cover,
+                                            width: 150,
+                                            height: 150,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        Expanded(
+                                          child:
+                                              buildAttractionDetails(attraction),
+                                        ),
+                                      ],
+                                    ),
                             ),
                           );
                         } else {
@@ -261,6 +267,47 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
       ),
     );
   }
+
+  Widget buildAttractionDetails(TouristAttraction attraction) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Attraction Name
+      Text(
+        attraction.nama,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue,
+        ),
+      ),
+      const SizedBox(height: 8),
+      // Rating
+      Text(
+        'Rating: ${attraction.voteAverage} / 5',
+        style: const TextStyle(color: Colors.grey),
+      ),
+      const SizedBox(height: 4),
+      // Display all categories
+      Text(
+        'Type: ${attraction.type}',
+        style: const TextStyle(color: Colors.grey),
+      ),
+      const SizedBox(height: 4),
+      // Weekday Price
+      Text(
+        'Weekday Price: IDR ${attraction.htmWeekday}',
+        style: const TextStyle(color: Colors.grey),
+      ),
+      const SizedBox(height: 4),
+      // Weekend Price
+      Text(
+        'Weekend Price: IDR ${attraction.htmWeekend}',
+        style: const TextStyle(color: Colors.grey),
+      ),
+    ],
+  );
+}
 
   @override
   void dispose() {
