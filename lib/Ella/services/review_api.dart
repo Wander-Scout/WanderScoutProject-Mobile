@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:wanderscout/ella/models/review_entry.dart'; // Adjust the path if necessary
+import 'package:wanderscout/ella/models/review_entry.dart'; 
 import 'package:wanderscout/davin/API/api_service.dart';
 
 class ReviewApi {
@@ -42,5 +42,4 @@ class ReviewApi {
     return reviewsJson.map((json) => ReviewEntry.fromJson(json)).toList();
   }
 
-  // Add more methods for operations if necessary
 }
