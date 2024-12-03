@@ -1,9 +1,11 @@
+
 import 'package:wanderscout/davin/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:wanderscout/davin/screens/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     final request = context.read<CookieRequest>();
+    final userProvider = context.read<UserProvider>();  // Access UserProvider
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -37,15 +40,19 @@ class _LoginPageState extends State<LoginPage> {
       if (request.loggedIn) {
         final token = response['token'];
         final message = response['message'];
+        final isAdmin = response['is_admin'] ?? false;  // Get is_admin status
 
         // Store the token securely
         await _storage.write(key: 'auth_token', value: token);
+
+        // Store isAdmin status in UserProvider
+        userProvider.setIsAdmin(isAdmin);
 
         if (context.mounted) {
           // Navigate to the menu
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage()),
+            MaterialPageRoute(builder: (context) => MyHomePage()),
           );
 
           // Show a success message
@@ -118,8 +125,8 @@ class _LoginPageState extends State<LoginPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
                     ),
                   ),
                   const SizedBox(height: 12.0),
@@ -131,8 +138,8 @@ class _LoginPageState extends State<LoginPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
                     ),
                     obscureText: true,
                   ),

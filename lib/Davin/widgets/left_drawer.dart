@@ -1,3 +1,5 @@
+// lib/davin/widgets/left_drawer.dart
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -7,12 +9,17 @@ import 'package:wanderscout/davin/screens/tourist_attraction_list.dart';
 import 'package:wanderscout/ella/screens/list_review.dart';
 import 'package:wanderscout/ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
+import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
+
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    bool isAdmin = userProvider.isAdmin;
+
     return Drawer(
       child: ListView(
         children: [
@@ -77,7 +84,8 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TouristAttractionScreen()),
+                  builder: (context) => TouristAttractionScreen(),
+                ),
               );
             },
           ),
@@ -87,10 +95,31 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RestaurantListScreen()),
+                MaterialPageRoute(
+                  builder: (context) => RestaurantListScreen(),
+                ),
               );
             },
           ),
+
+          // Admin-only options
+          if (isAdmin) ...[
+            ListTile(
+              leading: const Icon(Icons.add_business, color: Colors.black),
+              title: const Text('Add Restaurant'),
+              onTap: () {
+                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_location, color: Colors.black),
+              title: const Text('Add Attraction'),
+              onTap: () {
+               
+              },
+            ),
+          ],
+
           ListTile(
             leading: const Icon(Icons.newspaper, color: Colors.black),
             title: const Text('News'),
@@ -102,7 +131,9 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CartScreen()),
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(),
+                ),
               );
             },
           ),
@@ -111,8 +142,9 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout, color: Colors.black),
             title: const Text('Logout'),
             onTap: () async {
-              final request =
-                  Provider.of<CookieRequest>(context, listen: false);
+              final request = Provider.of<CookieRequest>(context, listen: false);
+              final userProvider =
+                  Provider.of<UserProvider>(context, listen: false); // Access UserProvider
               const logoutUrl =
                   "http://127.0.0.1:8000/authentication/flutter_logout/";
 
@@ -124,6 +156,9 @@ class LeftDrawer extends StatelessWidget {
                     String message =
                         response["message"] ?? "Unexpected error occurred.";
                     if (response['status']) {
+                      // Reset UserProvider state
+                      userProvider.reset();
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("$message Goodbye"),
@@ -132,7 +167,8 @@ class LeftDrawer extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
+                          builder: (context) => const LoginPage(),
+                        ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
