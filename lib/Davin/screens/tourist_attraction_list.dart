@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wanderscout/Davin/models/touristattraction.dart';
 import 'package:wanderscout/davin/widgets/left_drawer.dart';
 import 'package:wanderscout/Davin/API/tourist_api.dart';
+import 'package:wanderscout/Davin/screens/attraction_detail.dart';
 
 class TouristAttractionScreen extends StatefulWidget {
   const TouristAttractionScreen({super.key});
@@ -87,8 +88,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
       _filteredAttractions = _allAttractions.where((attraction) {
         final matchesSearchQuery =
             attraction.nama.toLowerCase().contains(_searchQuery.toLowerCase());
-        final matchesType =
-            _selectedType == 'All' || attraction.type.split(',').first.trim() == _selectedType;
+        final matchesType = _selectedType == 'All' ||
+            attraction.type.split(',').first.trim() == _selectedType;
         return matchesSearchQuery && matchesType;
       }).toList();
 
@@ -122,7 +123,9 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
   }
 
   String getImageForAttractionType(String? type) {
-    final firstCategory = type?.split(',').first.trim().replaceAll(' ', '').toLowerCase() ?? 'placeholder';
+    final firstCategory =
+        type?.split(',').first.trim().replaceAll(' ', '').toLowerCase() ??
+            'placeholder';
     return 'lib/static/attractions/$firstCategory.png';
   }
 
@@ -209,50 +212,62 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: isSmallScreen
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.asset(
-                                            getImageForAttractionType(
-                                                attraction.type),
-                                            fit: BoxFit.cover,
-                                            width: double.infinity,
-                                            height: 200,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AttractionDetailScreen(
+                                            attraction: attraction),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: isSmallScreen
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Image.asset(
+                                              getImageForAttractionType(
+                                                  attraction.type),
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: 200,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        buildAttractionDetails(attraction),
-                                      ],
-                                    )
-                                  : Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.asset(
-                                            getImageForAttractionType(
-                                                attraction.type),
-                                            fit: BoxFit.cover,
-                                            width: 150,
-                                            height: 150,
+                                          const SizedBox(height: 8),
+                                          buildAttractionDetails(attraction),
+                                        ],
+                                      )
+                                    : Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Image.asset(
+                                              getImageForAttractionType(
+                                                  attraction.type),
+                                              fit: BoxFit.cover,
+                                              width: 150,
+                                              height: 150,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 16),
-                                        Expanded(
-                                          child:
-                                              buildAttractionDetails(attraction),
-                                        ),
-                                      ],
-                                    ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: buildAttractionDetails(
+                                                attraction),
+                                          ),
+                                        ],
+                                      ),
+                              ),
                             ),
                           );
                         } else {
@@ -269,45 +284,45 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
   }
 
   Widget buildAttractionDetails(TouristAttraction attraction) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // Attraction Name
-      Text(
-        attraction.nama,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.blue,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Attraction Name
+        Text(
+          attraction.nama,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
         ),
-      ),
-      const SizedBox(height: 8),
-      // Rating
-      Text(
-        'Rating: ${attraction.voteAverage} / 5',
-        style: const TextStyle(color: Colors.grey),
-      ),
-      const SizedBox(height: 4),
-      // Display all categories
-      Text(
-        'Type: ${attraction.type}',
-        style: const TextStyle(color: Colors.grey),
-      ),
-      const SizedBox(height: 4),
-      // Weekday Price
-      Text(
-        'Weekday Price: IDR ${attraction.htmWeekday}',
-        style: const TextStyle(color: Colors.grey),
-      ),
-      const SizedBox(height: 4),
-      // Weekend Price
-      Text(
-        'Weekend Price: IDR ${attraction.htmWeekend}',
-        style: const TextStyle(color: Colors.grey),
-      ),
-    ],
-  );
-}
+        const SizedBox(height: 8),
+        // Rating
+        Text(
+          'Rating: ${attraction.voteAverage} / 5',
+          style: const TextStyle(color: Colors.grey),
+        ),
+        const SizedBox(height: 4),
+        // Display all categories
+        Text(
+          'Type: ${attraction.type}',
+          style: const TextStyle(color: Colors.grey),
+        ),
+        const SizedBox(height: 4),
+        // Weekday Price
+        Text(
+          'Weekday Price: IDR ${attraction.htmWeekday}',
+          style: const TextStyle(color: Colors.grey),
+        ),
+        const SizedBox(height: 4),
+        // Weekend Price
+        Text(
+          'Weekend Price: IDR ${attraction.htmWeekend}',
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ],
+    );
+  }
 
   @override
   void dispose() {
