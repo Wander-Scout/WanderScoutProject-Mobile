@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:wanderscout/ella/models/review_entry.dart'; 
+import 'package:wanderscout/ella/models/review_entry.dart';
 import 'package:wanderscout/davin/API/api_service.dart';
 
 class ReviewApi {
@@ -13,7 +13,6 @@ class ReviewApi {
     required int page,
     required int pageSize,
   }) async {
-    // Make the GET request with pagination parameters
     final response = await _apiService.get(
       url: '${_baseUrl}json/', // The endpoint for fetching reviews
       queryParams: {
@@ -22,24 +21,49 @@ class ReviewApi {
       },
     );
 
-    // Check for HTTP errors
     if (response.statusCode != 200) {
       throw Exception(
         'Failed to fetch reviews. Status Code: ${response.statusCode}. Body: ${response.body}',
       );
     }
 
-    // Parse the JSON response
     final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
-    // Check if the "reviews" key exists in the JSON response
     if (!jsonResponse.containsKey('reviews')) {
       throw Exception('Invalid response format: "reviews" key not found.');
     }
 
-    // Map JSON data to ReviewEntry objects
     final List<dynamic> reviewsJson = jsonResponse['reviews'] as List<dynamic>;
     return reviewsJson.map((json) => ReviewEntry.fromJson(json)).toList();
+  }
+
+  // Check if the user is an admin
+  Future<bool> isAdmin() async {
+    final response = await _apiService.get(
+      url: '${_baseUrl}check_if_admin/', // Django endpoint to check admin status
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['is_admin'] ?? false;
+    } else {
+      throw Exception('Failed to check admin status');
+    }
+  }
+
+  // Add a reply as an admin
+  Future<void> addAdminReply({
+    required int reviewId,
+    required String replyText,
+  }) async {
+    final response = await _apiService.post(
+      url: '${_baseUrl}reviews/$reviewId/reply/',
+      body: {'reply_text': replyText}, // Pass the body as a Map<String, dynamic>
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add reply: ${response.body}');
+    }
   }
 
 }
