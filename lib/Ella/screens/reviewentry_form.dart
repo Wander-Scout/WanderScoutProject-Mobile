@@ -27,7 +27,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
       throw Exception('Authentication token not found. Please log in.');
     }
 
-    final url = Uri.parse('http://127.0.0.1:8000/apireview/');
+    final url = Uri.parse('https://alano-davin-wanderscout.pbp.cs.ui.ac.id/apireview/');
     final response = await http.post(
       url,
       headers: {

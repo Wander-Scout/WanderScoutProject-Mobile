@@ -4,7 +4,7 @@ import 'package:wanderscout/davin/API/api_service.dart';
 
 class ReviewApi {
   final ApiService _apiService;
-  final String _baseUrl = 'http://127.0.0.1:8000/';
+  final String _baseUrl = 'https://alano-davin-wanderscout.pbp.cs.ui.ac.id/';
 
   // Initialize the API service
   ReviewApi() : _apiService = ApiService();
