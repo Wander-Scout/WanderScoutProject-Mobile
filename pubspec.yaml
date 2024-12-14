@@ -42,7 +42,8 @@ dependencies:
   pbp_django_auth: ^0.4.0
 
   http: any
-  url_launcher: any
+  xml: ^5.3.1
+  url_launcher: ^6.1.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
