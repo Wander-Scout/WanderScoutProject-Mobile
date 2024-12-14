@@ -6,11 +6,11 @@ class ReceiptScreen extends StatelessWidget {
   final double totalPrice;
 
   const ReceiptScreen({
-    Key? key,
+    super.key,
     required this.bookingId,
     required this.services,
     required this.totalPrice,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +131,7 @@ class ReceiptScreen extends StatelessWidget {
                               ],
                             ),
                           );
-                        }).toList(),
+                        }),
                         const Divider(),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),

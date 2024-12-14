@@ -6,11 +6,11 @@ class RestaurantCard extends StatelessWidget {
   final VoidCallback? onDelete;
 
   const RestaurantCard({
-    Key? key,
+    super.key,
     required this.restaurant,
     this.onEdit,
     this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

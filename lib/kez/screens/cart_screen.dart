@@ -4,7 +4,7 @@ import 'package:wanderscout/kez/services/cart_service.dart';
 import 'package:wanderscout/kez/models/cart_item.dart'; // Import the models
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  const CartScreen({super.key});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -16,7 +16,7 @@ class _CartScreenState extends State<CartScreen> {
   double _totalCost = 0.0;
   bool _isLoading = true; // Initial loading
   bool _isFetchingMore = false; // Loading during scroll
-  int _itemsToShow = 10; // Number of items to display per batch
+  final int _itemsToShow = 10; // Number of items to display per batch
 
   final ScrollController _scrollController = ScrollController();
 

@@ -146,7 +146,7 @@ class LeftDrawer extends StatelessWidget {
               final userProvider =
                   Provider.of<UserProvider>(context, listen: false); // Access UserProvider
               const logoutUrl =
-                  "http://127.0.0.1:8000/authentication/flutter_logout/";
+                  "http://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/flutter_logout/";
 
               try {
                 final response = await request.logout(logoutUrl);

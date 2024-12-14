@@ -13,7 +13,7 @@ class ReviewListPage extends StatefulWidget {
 class _ReviewListPageState extends State<ReviewListPage> {
   final ReviewApi _api = ReviewApi();
 
-  List<ReviewEntry> _reviews = [];
+  final List<ReviewEntry> _reviews = [];
   bool _isLoading = false; // Tracks loading state for reviews
   bool _hasMore = true; // Indicates if there are more reviews to load
   int _currentPage = 1;
