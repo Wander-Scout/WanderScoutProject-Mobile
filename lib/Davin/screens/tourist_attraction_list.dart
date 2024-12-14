@@ -8,8 +8,7 @@ class TouristAttractionScreen extends StatefulWidget {
   const TouristAttractionScreen({super.key});
 
   @override
-  State<TouristAttractionScreen> createState() =>
-      _TouristAttractionScreenState();
+  State<TouristAttractionScreen> createState() => _TouristAttractionScreenState();
 }
 
 class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
@@ -17,7 +16,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
   final TouristAttractionApi _api = TouristAttractionApi();
 
   List<TouristAttraction> _displayedAttractions = [];
-  List<TouristAttraction> _allAttractions = [];
+  final List<TouristAttraction> _allAttractions = [];
   List<TouristAttraction> _filteredAttractions = [];
   bool _isLoading = false;
   bool _hasMore = true;
@@ -34,8 +33,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     _fetchTouristAttractions();
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent &&
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
           !_isLoading &&
           _hasMore) {
         _loadMoreAttractions();
@@ -88,7 +86,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
       _filteredAttractions = _allAttractions.where((attraction) {
         final matchesSearchQuery =
             attraction.nama.toLowerCase().contains(_searchQuery.toLowerCase());
-        final matchesType = _selectedType == 'All' ||
+        final matchesType =
+            _selectedType == 'All' ||
             attraction.type.split(',').first.trim() == _selectedType;
         return matchesSearchQuery && matchesType;
       }).toList();
@@ -191,8 +190,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : NotificationListener<ScrollNotification>(
                     onNotification: (scrollInfo) {
-                      if (scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent) {
+                      if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                         _loadMoreAttractions();
                       }
                       return false;
@@ -200,8 +198,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                     child: ListView.builder(
                       controller: _scrollController,
                       padding: const EdgeInsets.all(16.0),
-                      itemCount:
-                          _displayedAttractions.length + (_isLoading ? 1 : 0),
+                      itemCount: _displayedAttractions.length + (_isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index < _displayedAttractions.length) {
                           final attraction = _displayedAttractions[index];
@@ -218,8 +215,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        AttractionDetailScreen(
-                                            attraction: attraction),
+                                        AttractionDetailScreen(attraction: attraction),
                                   ),
                                 );
                               },
@@ -227,15 +223,12 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: isSmallScreen
                                     ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(8),
                                             child: Image.asset(
-                                              getImageForAttractionType(
-                                                  attraction.type),
+                                              getImageForAttractionType(attraction.type),
                                               fit: BoxFit.cover,
                                               width: double.infinity,
                                               height: 200,
@@ -246,15 +239,12 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                         ],
                                       )
                                     : Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(8),
                                             child: Image.asset(
-                                              getImageForAttractionType(
-                                                  attraction.type),
+                                              getImageForAttractionType(attraction.type),
                                               fit: BoxFit.cover,
                                               width: 150,
                                               height: 150,
@@ -262,8 +252,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                           ),
                                           const SizedBox(width: 16),
                                           Expanded(
-                                            child: buildAttractionDetails(
-                                                attraction),
+                                            child: buildAttractionDetails(attraction),
                                           ),
                                         ],
                                       ),
@@ -271,8 +260,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                             ),
                           );
                         } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         }
                       },
                     ),
@@ -287,7 +275,6 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Attraction Name
         Text(
           attraction.nama,
           style: const TextStyle(
@@ -297,25 +284,21 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        // Rating
         Text(
           'Rating: ${attraction.voteAverage} / 5',
           style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 4),
-        // Display all categories
         Text(
           'Type: ${attraction.type}',
           style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 4),
-        // Weekday Price
         Text(
           'Weekday Price: IDR ${attraction.htmWeekday}',
           style: const TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 4),
-        // Weekend Price
         Text(
           'Weekend Price: IDR ${attraction.htmWeekend}',
           style: const TextStyle(color: Colors.grey),

@@ -145,7 +145,7 @@ packages:
     source: sdk
     version: "0.0.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
@@ -249,7 +249,7 @@ packages:
     source: hosted
     version: "2.1.5"
   path_provider_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider_android
       sha256: "8c4967f8b7cb46dc914e178daa29813d83ae502e0529d7b0478330616a691ef7"
@@ -438,7 +438,7 @@ packages:
     source: hosted
     version: "1.4.0"
   url_launcher:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: url_launcher
       sha256: "9d06212b1362abc2f0f0d78e6f09f726608c74e3b9462e8368bb03314aa8d603"

@@ -5,6 +5,8 @@ import '../services/restaurant_api.dart'; // Import RestaurantApi
 import 'package:wanderscout/davin/widgets/left_drawer.dart'; // Import LeftDrawer
 
 class RestaurantListScreen extends StatefulWidget {
+  const RestaurantListScreen({super.key});
+
   @override
   _RestaurantListScreenState createState() => _RestaurantListScreenState();
 }
@@ -43,7 +45,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             .toList();
         foodPreferences = [
           'All',
-          ...preferences.map((e) => e.displayName).toList()
+          ...preferences.map((e) => e.displayName)
         ];
 
         filteredRestaurants = List.from(allRestaurants);

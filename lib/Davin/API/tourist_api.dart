@@ -1,16 +1,16 @@
-// services/tourist_attraction_api.dart
 import 'dart:convert';
 import 'package:wanderscout/Davin/models/touristattraction.dart';
 import 'api_service.dart';
 
 class TouristAttractionApi {
   final ApiService _apiService = ApiService();
-  final String _baseUrl = 'http://127.0.0.1:8000/tourist_attraction';
+  final String _baseUrl = 'https://alano-davin-wanderscout.pbp.cs.ui.ac.id/tourist_attraction';
 
   Future<List<TouristAttraction>> fetchTouristAttractions({
     required int page,
     required int pageSize,
   }) async {
+    // You can pass origin/referer if needed, or rely on defaults in ApiService
     final response = await _apiService.get(
       url: '$_baseUrl/api_tourist_attractions',
       queryParams: {
@@ -19,9 +19,10 @@ class TouristAttractionApi {
       },
     );
 
+    print('Response Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
     final List<dynamic> jsonResponse = jsonDecode(response.body);
     return jsonResponse.map((json) => TouristAttraction.fromJson(json)).toList();
   }
-
-  // You can add more methods like fetchById, create, update, delete, etc.
 }

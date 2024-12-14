@@ -1,4 +1,4 @@
-package com.example.wanderscout
+package com.example.wanderscoutprojectmobile
 
 import io.flutter.embedding.android.FlutterActivity
 

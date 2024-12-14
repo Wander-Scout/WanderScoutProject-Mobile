@@ -1,9 +1,3 @@
-import 'dart:convert';
-
-List<TouristAttraction> touristAttractionFromJson(String str) => List<TouristAttraction>.from(json.decode(str).map((x) => TouristAttraction.fromJson(x)));
-
-String touristAttractionToJson(List<TouristAttraction> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
 class TouristAttraction {
   String id;
   int no;
@@ -35,20 +29,21 @@ class TouristAttraction {
     required this.longitude,
   });
 
+  // Updated factory method with explicit type casting
   factory TouristAttraction.fromJson(Map<String, dynamic> json) => TouristAttraction(
     id: json["id"],
-    no: json["no"],
+    no: json["no"] is int ? json["no"] : int.tryParse(json["no"].toString()) ?? 0,
     nama: json["nama"],
-    rating: json["rating"],
-    voteAverage: json["vote_average"]?.toDouble() ?? 0.0,
-    voteCount: json["vote_count"],
+    rating: (json["rating"] as num).toDouble(),
+    voteAverage: (json["vote_average"] as num?)?.toDouble() ?? 0.0,
+    voteCount: json["vote_count"] is int ? json["vote_count"] : (json["vote_count"] as num).toInt(),
     type: json["type"],
-    htmWeekday: json["htm_weekday"],
-    htmWeekend: json["htm_weekend"],
+    htmWeekday: json["htm_weekday"] is int ? json["htm_weekday"] : (json["htm_weekday"] as num).toInt(),
+    htmWeekend: json["htm_weekend"] is int ? json["htm_weekend"] : (json["htm_weekend"] as num).toInt(),
     description: json["description"],
     gmapsUrl: json["gmaps_url"],
-    latitude: json["latitude"]?.toDouble() ?? 0.0,
-    longitude: json["longitude"]?.toDouble() ?? 0.0,
+    latitude: (json["latitude"] as num?)?.toDouble() ?? 0.0,
+    longitude: (json["longitude"] as num?)?.toDouble() ?? 0.0,
   );
 
   Map<String, dynamic> toJson() => {

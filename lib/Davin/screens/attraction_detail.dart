@@ -5,8 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AttractionDetailScreen extends StatelessWidget {
   final TouristAttraction attraction;
 
-  const AttractionDetailScreen({Key? key, required this.attraction})
-      : super(key: key);
+  const AttractionDetailScreen({super.key, required this.attraction});
 
   @override
   Widget build(BuildContext context) {
