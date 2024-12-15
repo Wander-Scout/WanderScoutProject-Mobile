@@ -1,0 +1,53 @@
+name: CI/CD Wanderscout Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up JDK 17 and Flutter
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.4'
+
+    # Step 3: Fetch dependencies
+    - name: Install dependencies
+      run: flutter pub get
+
+    # Step 4: Verify Flutter configuration
+    - name: Verify Flutter configuration
+      run: flutter doctor
+
+    # Step 5: Run tests
+    - name: Run tests
+      run: flutter test
+
+    # Step 6: Build the app (optional, based on platform)
+    - name: Build APK
+      run: flutter build apk --release
+
+    # Step 7: Archive build artifacts (optional)
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: wanderscout.apk
+        path: build/app/outputs/flutter-apk/app-release.apk
