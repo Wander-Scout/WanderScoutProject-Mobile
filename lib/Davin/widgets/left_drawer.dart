@@ -10,7 +10,7 @@ import 'package:wanderscout/Ella/screens/list_review.dart';
 import 'package:wanderscout/Ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
 import 'package:wanderscout/hh/screens/news.dart'; // Import the news page
-import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
