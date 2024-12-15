@@ -123,9 +123,12 @@ class AttractionDetailScreen extends StatelessWidget {
         InkWell(
           onTap: () async {
             final url = attraction.gmapsUrl;
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
+            final canLaunch = await canLaunchUrl(Uri.parse(url));
+
+            if (canLaunch) {
+              await launchUrl(Uri.parse(url));
+            } else if (context.mounted) {
+              // Check if widget is still mounted
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Could not launch Maps')),
               );
@@ -135,7 +138,7 @@ class AttractionDetailScreen extends StatelessWidget {
             'View on Google Maps',
             style: TextStyle(fontSize: 16, color: Colors.blue),
           ),
-        ),
+        )
       ],
     );
   }

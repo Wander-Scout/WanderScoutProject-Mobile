@@ -19,8 +19,6 @@ class TouristAttractionApi {
       },
     );
 
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
 
     final List<dynamic> jsonResponse = jsonDecode(response.body);
     return jsonResponse.map((json) => TouristAttraction.fromJson(json)).toList();

@@ -20,59 +20,60 @@ class _LoginPageState extends State<LoginPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   bool _isLoading = false;
 
-  Future<void> _login() async {
-    final request = context.read<CookieRequest>();
-    final userProvider = context.read<UserProvider>();  // Access UserProvider
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
+Future<void> _login() async {
+  final request = context.read<CookieRequest>();
+  final userProvider = context.read<UserProvider>();
+  final username = _usernameController.text.trim();
+  final password = _passwordController.text.trim();
 
-    setState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
 
-    try {
-      // Make the login request
-      final response = await request.login(
-        "https://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/flutter_login/",
-        {'username': username, 'password': password},
+  try {
+    // Make the login request
+    final response = await request.login(
+      "https://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/flutter_login/",
+      {'username': username, 'password': password},
+    );
+
+    if (request.loggedIn) {
+      final token = response['token'];
+      final message = response['message'];
+      final isAdmin = response['is_admin'] ?? false;
+
+      // Store the token securely
+      await _storage.write(key: 'auth_token', value: token);
+      userProvider.setIsAdmin(isAdmin);
+
+      if (!mounted) return; // Check if still mounted
+
+      // Navigate to the menu
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
       );
 
-      if (request.loggedIn) {
-        final token = response['token'];
-        final message = response['message'];
-        final isAdmin = response['is_admin'] ?? false;  // Get is_admin status
-
-        // Store the token securely
-        await _storage.write(key: 'auth_token', value: token);
-
-        // Store isAdmin status in UserProvider
-        userProvider.setIsAdmin(isAdmin);
-
-        if (context.mounted) {
-          // Navigate to the menu
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
-          );
-
-          // Show a success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("$message Welcome, $username!")),
-          );
-        }
-      } else {
-        // Login failed, show error message
-        _showErrorDialog(response['message']);
+      // Show a success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("$message Welcome, $username!")),
+        );
       }
-    } catch (e) {
-      // Handle network or server errors
-      _showErrorDialog('An error occurred: $e');
-    } finally {
+    } else {
+      if (mounted) _showErrorDialog(response['message']);
+    }
+  } catch (e) {
+    if (mounted) _showErrorDialog('An error occurred: $e');
+  } finally {
+    if (mounted) {
       setState(() {
         _isLoading = false;
       });
     }
   }
+}
+
 
   void _showErrorDialog(String message) {
     showDialog(
