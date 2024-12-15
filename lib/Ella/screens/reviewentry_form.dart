@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:wanderscout/davin/widgets/left_drawer.dart';
-import 'package:wanderscout/ella/screens/list_review.dart'; // Import the ReviewListPage
+import 'package:wanderscout/Davin/widgets/left_drawer.dart';
+import 'package:wanderscout/Ella/screens/list_review.dart'; // Import the ReviewListPage
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:wanderscout/ella/models/review_entry.dart';
-import 'package:wanderscout/davin/API/api_service.dart';
+import 'package:wanderscout/Ella/models/review_entry.dart';
+import 'package:wanderscout/Davin/API/api_service.dart';
 
 class ReviewApi {
   final ApiService _apiService;
@@ -12,13 +12,22 @@ class ReviewApi {
   Future<List<ReviewEntry>> fetchReviews({
     required int page,
     required int pageSize,
+    int? rating,
   }) async {
+    // Build query parameters
+    final queryParams = {
+      'page': '$page',
+      'page_size': '$pageSize',
+    };
+
+    // Add rating only if it's provided
+    if (rating != null) {
+      queryParams['rating'] = rating.toString();
+    }
+
     final response = await _apiService.get(
-      url: '${_baseUrl}json/', // The endpoint for fetching reviews
-      queryParams: {
-        'page': '$page',
-        'page_size': '$pageSize',
-      },
+      url: '${_baseUrl}json/',
+      queryParams: queryParams,
     );
 
     if (response.statusCode != 200) {
@@ -28,7 +37,6 @@ class ReviewApi {
     }
 
     final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-
     if (!jsonResponse.containsKey('reviews')) {
       throw Exception('Invalid response format: "reviews" key not found.');
     }
@@ -40,7 +48,7 @@ class ReviewApi {
   // Check if the user is an admin
   Future<bool> isAdmin() async {
     final response = await _apiService.get(
-      url: '${_baseUrl}check_if_admin/', // Django endpoint to check admin status
+      url: '${_baseUrl}check_if_admin/',
     );
 
     if (response.statusCode == 200) {
@@ -58,7 +66,7 @@ class ReviewApi {
   }) async {
     final response = await _apiService.post(
       url: '${_baseUrl}reviews/$reviewId/reply/',
-      body: {'reply_text': replyText}, // Pass the body as a Map<String, dynamic>
+      body: {'reply_text': replyText},
     );
 
     if (response.statusCode != 201) {
@@ -66,4 +74,32 @@ class ReviewApi {
     }
   }
 
+  // Get the current logged-in user's username
+  Future<String> getCurrentUser() async {
+    final response = await _apiService.get(
+      url: '${_baseUrl}get_current_user/',
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data.containsKey('username')) {
+        return data['username'];
+      } else {
+        throw Exception('Response does not contain "username" field.');
+      }
+    } else {
+      throw Exception('Failed to get current user: ${response.body}');
+    }
+  }
+
+  // Delete a review
+  Future<void> deleteReview(int reviewId) async {
+    final response = await _apiService.delete(
+      url: '${_baseUrl}reviews/$reviewId/delete/',
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to delete review: ${response.body}');
+    }
+  }
 }
