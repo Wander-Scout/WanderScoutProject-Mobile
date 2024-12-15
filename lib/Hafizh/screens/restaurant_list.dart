@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../models/restaurant.dart'; // Adjust the path if necessary
 import '../services/restaurant_api.dart'; // Import RestaurantApi
-import 'package:wanderscout/davin/widgets/left_drawer.dart'; // Import LeftDrawer
+import 'package:wanderscout/Davin/widgets/left_drawer.dart'; // Import LeftDrawer
 
 class RestaurantListScreen extends StatefulWidget {
   const RestaurantListScreen({super.key});

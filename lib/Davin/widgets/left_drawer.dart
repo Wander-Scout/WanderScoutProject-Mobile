@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:wanderscout/kez/screens/cart_screen.dart';
-import 'package:wanderscout/davin/screens/login.dart';
-import 'package:wanderscout/davin/screens/tourist_attraction_list.dart';
-import 'package:wanderscout/ella/screens/list_review.dart';
-import 'package:wanderscout/ella/screens/reviewentry_form.dart';
+import 'package:wanderscout/Davin/screens/login.dart';
+import 'package:wanderscout/Davin/screens/tourist_attraction_list.dart';
+import 'package:wanderscout/Ella/screens/list_review.dart';
+import 'package:wanderscout/Ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
-import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
 
 
 class LeftDrawer extends StatelessWidget {

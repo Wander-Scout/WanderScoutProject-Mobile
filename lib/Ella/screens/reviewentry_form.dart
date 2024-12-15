@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:wanderscout/davin/widgets/left_drawer.dart';
-import 'package:wanderscout/ella/screens/list_review.dart'; // Import the ReviewListPage
+import 'package:wanderscout/Davin/widgets/left_drawer.dart';
+import 'package:wanderscout/Ella/screens/list_review.dart'; // Import the ReviewListPage
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,7 +27,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
       throw Exception('Authentication token not found. Please log in.');
     }
 
-    final url = Uri.parse('http://127.0.0.1:8000/apireview/');
+    final url = Uri.parse('https://alano-davin-wanderscout.pbp.cs.ui.ac.id/apireview/');
     final response = await http.post(
       url,
       headers: {

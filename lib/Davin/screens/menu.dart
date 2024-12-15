@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wanderscout/davin/widgets/left_drawer.dart';
-import 'package:wanderscout/davin/widgets/card.dart';
+import 'package:wanderscout/Davin/widgets/left_drawer.dart';
+import 'package:wanderscout/Davin/widgets/card.dart';
 
 class MyHomePage extends StatelessWidget {
   final List<ItemHomepage> items = [

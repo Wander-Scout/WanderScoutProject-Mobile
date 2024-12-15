@@ -1,11 +1,11 @@
 // restaurant_api.dart
 import 'dart:convert';
 import 'package:wanderscout/Hafizh/models/restaurant.dart'; // Adjust the path if necessary
-import 'package:wanderscout/davin/API/api_service.dart';
+import 'package:wanderscout/Davin/API/api_service.dart';
 
 class RestaurantApi {
   final ApiService _apiService;
-  final String _baseUrl = 'http://127.0.0.1:8000/';
+  final String _baseUrl = 'https://alano-davin-wanderscout.pbp.cs.ui.ac.id/';
 
   // Initialize the API service
   RestaurantApi() : _apiService = ApiService();
