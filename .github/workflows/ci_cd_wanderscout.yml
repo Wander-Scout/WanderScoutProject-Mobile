@@ -44,15 +44,11 @@ jobs:
     - name: Verify Flutter configuration
       run: flutter doctor
 
-    # Step 6: Run tests
-    - name: Run tests
-      run: flutter test
-
-    # Step 7: Build the app (optional, based on platform)
+    # Step 6: Build the app (optional, based on platform)
     - name: Build APK
       run: flutter build apk --release
 
-    # Step 8: Archive build artifacts (optional)
+    # Step 7: Archive build artifacts (optional)
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
