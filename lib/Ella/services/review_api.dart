@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:wanderscout/ella/models/review_entry.dart';
-import 'package:wanderscout/davin/API/api_service.dart';
+import 'package:wanderscout/Ella/models/review_entry.dart';
+import 'package:wanderscout/Davin/API/api_service.dart';
 
 class ReviewApi {
   final ApiService _apiService;

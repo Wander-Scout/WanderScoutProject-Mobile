@@ -1,11 +1,11 @@
 
-import 'package:wanderscout/davin/screens/menu.dart';
+import 'package:wanderscout/Davin/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:wanderscout/davin/screens/register.dart';
+import 'package:wanderscout/Davin/screens/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

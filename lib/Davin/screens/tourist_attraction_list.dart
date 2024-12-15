@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wanderscout/Davin/models/touristattraction.dart';
-import 'package:wanderscout/davin/widgets/left_drawer.dart';
+import 'package:wanderscout/Davin/widgets/left_drawer.dart';
 import 'package:wanderscout/Davin/API/tourist_api.dart';
 import 'package:wanderscout/Davin/screens/attraction_detail.dart';
 

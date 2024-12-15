@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wanderscout/ella/models/review_entry.dart';
-import 'package:wanderscout/davin/widgets/left_drawer.dart';
-import 'package:wanderscout/ella/services/review_api.dart';
+import 'package:wanderscout/Ella/models/review_entry.dart';
+import 'package:wanderscout/Davin/widgets/left_drawer.dart';
+import 'package:wanderscout/Ella/services/review_api.dart';
 
 class ReviewListPage extends StatefulWidget {
   const ReviewListPage({super.key});
