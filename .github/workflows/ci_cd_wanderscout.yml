@@ -34,24 +34,29 @@ jobs:
     - name: Export JAVA_HOME
       run: echo "JAVA_HOME=${{ env.JAVA_HOME }}" >> $GITHUB_ENV
 
+    # Step 4: Install Flutter
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.4'
 
-    # Step 4: Fetch dependencies
+    # Step 5: Fetch dependencies
     - name: Install dependencies
       run: flutter pub get
 
-    # Step 5: Verify Flutter configuration
+    # Step 6: Verify Flutter configuration
     - name: Verify Flutter configuration
       run: flutter doctor
 
-    # Step 6: Build the app
+    # Step 7: Run Flutter tests
+    - name: Run Flutter tests
+      run: flutter test
+
+    # Step 8: Build the app
     - name: Build APK
       run: flutter build apk --release
 
-    # Step 7: Archive build artifacts
+    # Step 9: Archive build artifacts
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
