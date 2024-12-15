@@ -43,7 +43,7 @@ dependencies:
 
   http: any
   xml: ^5.3.1
-  url_launcher: ^6.1.5
+  url_launcher: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
