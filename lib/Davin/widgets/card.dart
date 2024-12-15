@@ -16,12 +16,12 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: item.color.withOpacity(0.1),
+      color: item.color.withAlpha((0.1 * 255).round()),
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6), // Smaller corner radius
         side: BorderSide(
-          color: item.color.withOpacity(0.6), // Border color for distinction
+          color: item.color.withAlpha((0.6 * 255).round()), // Border color for distinction
           width: 1,
         ),
       ),
