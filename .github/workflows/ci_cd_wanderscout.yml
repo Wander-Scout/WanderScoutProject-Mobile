@@ -17,7 +17,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up JDK 17 and Flutter
+    # Step 2: Print working directory and list files
+    - name: Print working directory
+      run: pwd
+
+    - name: List files
+      run: ls -R
+
+    # Step 3: Set up JDK 17 and Flutter
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -29,23 +36,23 @@ jobs:
       with:
         flutter-version: '3.24.4'
 
-    # Step 3: Fetch dependencies
+    # Step 4: Fetch dependencies
     - name: Install dependencies
       run: flutter pub get
 
-    # Step 4: Verify Flutter configuration
+    # Step 5: Verify Flutter configuration
     - name: Verify Flutter configuration
       run: flutter doctor
 
-    # Step 5: Run tests
+    # Step 6: Run tests
     - name: Run tests
       run: flutter test
 
-    # Step 6: Build the app (optional, based on platform)
+    # Step 7: Build the app (optional, based on platform)
     - name: Build APK
       run: flutter build apk --release
 
-    # Step 7: Archive build artifacts (optional)
+    # Step 8: Archive build artifacts (optional)
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
