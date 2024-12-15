@@ -9,8 +9,8 @@ import 'package:wanderscout/Davin/screens/tourist_attraction_list.dart';
 import 'package:wanderscout/Ella/screens/list_review.dart';
 import 'package:wanderscout/Ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
-import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
-
+import 'package:wanderscout/hh/screens/news.dart'; // Import the news page
+import 'package:wanderscout/davin/providers/user_provider.dart'; // Import UserProvider
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -101,29 +101,34 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
-
           // Admin-only options
           if (isAdmin) ...[
             ListTile(
               leading: const Icon(Icons.add_business, color: Colors.black),
               title: const Text('Add Restaurant'),
               onTap: () {
-                
+                // Navigate to Add Restaurant page
               },
             ),
             ListTile(
               leading: const Icon(Icons.add_location, color: Colors.black),
               title: const Text('Add Attraction'),
               onTap: () {
-               
+                // Navigate to Add Attraction page
               },
             ),
           ],
-
           ListTile(
             leading: const Icon(Icons.newspaper, color: Colors.black),
-            title: const Text('News'),
-            onTap: () {},
+            title: const Text('News'), // New entry for News
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewsPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.shopping_cart, color: Colors.black),
