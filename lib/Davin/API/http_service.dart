@@ -49,18 +49,12 @@ class HttpService {
   }) async {
     final uri = Uri.parse(url);
 
-    print('PUT Request: $uri');
-    print('Headers: $headers');
-    print('Body: $body');
 
     final response = await http.put(
       uri,
       headers: headers,
       body: jsonEncode(body),
     );
-
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response;
@@ -76,15 +70,7 @@ class HttpService {
     required Map<String, String> headers,
   }) async {
     final uri = Uri.parse(url);
-
-    print('DELETE Request: $uri');
-    print('Headers: $headers');
-
     final response = await http.delete(uri, headers: headers);
-
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response;
     } else {
@@ -100,18 +86,11 @@ class HttpService {
     Map<String, String>? queryParams,
   }) async {
     final uri = Uri.parse(url).replace(queryParameters: queryParams);
-
-    print('OPTIONS Request: $uri');
-    print('Headers: $headers');
-
     final request = http.Request('OPTIONS', uri);
     request.headers.addAll(headers);
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
-
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response;

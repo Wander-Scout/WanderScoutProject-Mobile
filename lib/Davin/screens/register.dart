@@ -25,11 +25,13 @@ class _RegisterPageState extends State<RegisterPage> {
       String password2 = _confirmPasswordController.text.trim();
 
       if (password1 != password2) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Passwords do not match!'),
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Passwords do not match!'),
+            ),
+          );
+        }
         return;
       }
 
@@ -44,14 +46,17 @@ class _RegisterPageState extends State<RegisterPage> {
           }),
         );
 
-        if (context.mounted) {
+        // Handle success or error based on response
+        if (mounted) {
           if (response['status'] == 'success') {
-            // Show success message and navigate to the login page
+            // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Successfully registered!'),
               ),
             );
+
+            // Navigate to the login page
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -66,12 +71,14 @@ class _RegisterPageState extends State<RegisterPage> {
           }
         }
       } catch (e) {
-        // Handle network or server errors
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An error occurred: $e'),
-          ),
-        );
+        if (mounted) {
+          // Handle network or server errors
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('An error occurred: $e'),
+            ),
+          );
+        }
       }
     }
   }

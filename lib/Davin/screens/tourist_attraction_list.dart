@@ -8,7 +8,8 @@ class TouristAttractionScreen extends StatefulWidget {
   const TouristAttractionScreen({super.key});
 
   @override
-  State<TouristAttractionScreen> createState() => _TouristAttractionScreenState();
+  State<TouristAttractionScreen> createState() =>
+      _TouristAttractionScreenState();
 }
 
 class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
@@ -33,7 +34,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     _fetchTouristAttractions();
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
           !_isLoading &&
           _hasMore) {
         _loadMoreAttractions();
@@ -54,6 +56,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
         pageSize: _pageSize,
       );
 
+      if (!mounted) return; // Ensure widget is still mounted
+
       setState(() {
         _allAttractions.addAll(fetchedAttractions);
 
@@ -71,13 +75,17 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
         _currentPage++;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching attractions: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching attractions: $e')),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -109,6 +117,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return; // Ensure widget is still mounted
+
       final nextItems = _filteredAttractions
           .skip(_displayedAttractions.length)
           .take(_pageSize)
@@ -190,7 +200,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : NotificationListener<ScrollNotification>(
                     onNotification: (scrollInfo) {
-                      if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                      if (scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
                         _loadMoreAttractions();
                       }
                       return false;
@@ -198,7 +209,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                     child: ListView.builder(
                       controller: _scrollController,
                       padding: const EdgeInsets.all(16.0),
-                      itemCount: _displayedAttractions.length + (_isLoading ? 1 : 0),
+                      itemCount:
+                          _displayedAttractions.length + (_isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index < _displayedAttractions.length) {
                           final attraction = _displayedAttractions[index];
@@ -211,24 +223,30 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                             ),
                             child: InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        AttractionDetailScreen(attraction: attraction),
-                                  ),
-                                );
+                                if (mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          AttractionDetailScreen(
+                                              attraction: attraction),
+                                    ),
+                                  );
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: isSmallScreen
                                     ? Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                             child: Image.asset(
-                                              getImageForAttractionType(attraction.type),
+                                              getImageForAttractionType(
+                                                  attraction.type),
                                               fit: BoxFit.cover,
                                               width: double.infinity,
                                               height: 200,
@@ -239,12 +257,15 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                         ],
                                       )
                                     : Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                             child: Image.asset(
-                                              getImageForAttractionType(attraction.type),
+                                              getImageForAttractionType(
+                                                  attraction.type),
                                               fit: BoxFit.cover,
                                               width: 150,
                                               height: 150,
@@ -252,7 +273,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                           ),
                                           const SizedBox(width: 16),
                                           Expanded(
-                                            child: buildAttractionDetails(attraction),
+                                            child: buildAttractionDetails(
+                                                attraction),
                                           ),
                                         ],
                                       ),
@@ -260,7 +282,8 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                             ),
                           );
                         } else {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                       },
                     ),
