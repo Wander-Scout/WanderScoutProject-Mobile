@@ -3,32 +3,27 @@ import 'package:wanderscout/Davin/API/api_service.dart';
 import 'package:wanderscout/kez/models/cart_item.dart'; 
 
 class CartService {
-  static const String baseUrl = 'http://localhost:8000/cart/api';
+  static const String baseUrl = 'https://alano-davin-wanderscout.pbp.cs.ui.ac.id';
   static final ApiService _apiService = ApiService();
 
-  // Fetch cart items
   static Future<CartDetails> fetchCartItems() async {
-    final url = '$baseUrl/cart/items/';
+    final url = '$baseUrl/cart/api/cart/items';
 
     try {
       final response = await _apiService.get(url: url);
-      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        // Deserialize JSON response into CartDetails model
         return CartDetails.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to fetch cart: ${response.body}');
       }
     } catch (e) {
-      print('Error fetching cart items: $e');
       rethrow;
     }
   }
 
-  // Add to cart
   static Future<void> addToCart(String itemId, String itemType) async {
-    final url = '$baseUrl/cart/add/$itemId/';
+    final url = '$baseUrl/cart/api/cart/add/$itemId/';
     final body = {'item_type': itemType};
 
     try {
@@ -38,14 +33,12 @@ class CartService {
         throw Exception('Failed to add item to cart: ${response.body}');
       }
     } catch (e) {
-      print('Error adding item to cart: $e');
       rethrow;
     }
   }
 
-  // Remove from cart
   static Future<void> removeFromCart(String itemId) async {
-    final url = '$baseUrl/cart/remove/$itemId/';
+    final url = '$baseUrl/cart/api/cart/remove/$itemId/';
 
     try {
       final response = await _apiService.post(url: url);
@@ -54,36 +47,44 @@ class CartService {
         throw Exception('Failed to remove item: ${response.body}');
       }
     } catch (e) {
-      print('Error removing item from cart: $e');
       rethrow;
     }
   }
 
-static Future<Receipt> checkout() async {
-  final url = '$baseUrl/cart/checkout/';
+  static Future<Receipt> checkout() async {
+    final url = '$baseUrl/cart/api/cart/checkout/';
 
-  try {
-    final response = await _apiService.post(url: url);
-    print('Checkout Response Body: ${response.body}');
+    try {
+      final response = await _apiService.post(url: url);
 
-
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
-      if (responseBody['success'] == true) {
-        // Ensure correct parsing for the Receipt model
-        return Receipt.fromJson(responseBody['receipt']);
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        return Receipt.fromJson(json["receipt"]);
       } else {
-        throw Exception('Checkout failed: ${responseBody['error']}');
+        throw Exception('Checkout failed: ${response.body}');
       }
-    } else {
-      throw Exception('Checkout failed: ${response.body}');
+    } catch (e) {
+      rethrow;
     }
-  } catch (e) {
-    print('Error during checkout: $e');
-    throw Exception('An error occurred during checkout. Please try again.');
+  }
+
+  static Future<Receipt> fetchBookingById(String bookingId) async {
+    final url = '$baseUrl/cart/api/search/?booking_id=$bookingId';
+
+    try {
+      final response = await _apiService.get(url: url);
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        return Receipt.fromJson(json); // Deserialize into Receipt model
+      } else if (response.statusCode == 404) {
+        throw Exception('Booking not found.');
+      } else {
+        throw Exception('Failed to fetch booking: ${response.body}');
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }
 
-
-
-}

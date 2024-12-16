@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final cartDetails = cartDetailsFromJson(jsonString);
-
 import 'dart:convert';
 
 CartDetails cartDetailsFromJson(String str) => CartDetails.fromJson(json.decode(str));
@@ -87,7 +83,7 @@ class Item {
 class Receipt {
   String bookingId;
   double totalPrice;
-  List<Item> items;
+  List<ServiceItem> items;
 
   Receipt({
     required this.bookingId,
@@ -96,19 +92,44 @@ class Receipt {
   });
 
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
-        bookingId: json['booking_id']?.toString() ?? 'Unknown', // Handle null booking_id
-        totalPrice: json['total_price'] is double
-            ? json['total_price']
-            : double.parse(json['total_price'].toString()),
-        items: List<Item>.from(json['items'].map((x) => Item.fromJson(x))),
+        bookingId: json["booking_id"],
+        totalPrice: double.parse(json["total_price"].toString()),
+        items: List<ServiceItem>.from(
+          json["items"].map((x) => ServiceItem.fromJson(x)),
+        ),
       );
 
   Map<String, dynamic> toJson() => {
-        'booking_id': bookingId,
-        'total_price': totalPrice,
-        'items': List<dynamic>.from(items.map((x) => x.toJson())),
+        "booking_id": bookingId,
+        "total_price": totalPrice,
+        "items": List<dynamic>.from(items.map((x) => x.toJson())),
       };
 }
+
+class ServiceItem {
+  String name;
+  double price;
+  int quantity;
+
+  ServiceItem({
+    required this.name,
+    required this.price,
+    required this.quantity,
+  });
+
+  factory ServiceItem.fromJson(Map<String, dynamic> json) => ServiceItem(
+        name: json["name"],
+        price: double.parse(json["price"].toString()),
+        quantity: json["quantity"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "price": price,
+        "quantity": quantity,
+      };
+}
+
 
 
 
