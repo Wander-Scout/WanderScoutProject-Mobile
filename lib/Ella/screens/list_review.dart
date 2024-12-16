@@ -13,7 +13,8 @@ class ReviewListPage extends StatefulWidget {
 class _ReviewListPageState extends State<ReviewListPage> {
   final ReviewApi _api = ReviewApi();
 
-  List<ReviewEntry> _reviews = [];
+  // _reviews is never reassigned, so final is fine
+  final List<ReviewEntry> _reviews = [];
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;
@@ -23,7 +24,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
   String? _currentUsername;
   String _selectedRating = 'All Ratings';
 
-  late ScrollController _scrollController;
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
@@ -50,17 +51,21 @@ class _ReviewListPageState extends State<ReviewListPage> {
 
   Future<void> _initializeUserState() async {
     await _checkAdminStatus();
+    if (!mounted) return;
     await _fetchCurrentUser();
+    if (!mounted) return;
     await _fetchReviews();
   }
 
   Future<void> _checkAdminStatus() async {
     try {
       final isAdmin = await _api.isAdmin();
+      if (!mounted) return;
       setState(() {
         _isAdmin = isAdmin;
       });
     } catch (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error checking admin status: $error')),
       );
@@ -70,10 +75,12 @@ class _ReviewListPageState extends State<ReviewListPage> {
   Future<void> _fetchCurrentUser() async {
     try {
       final username = await _api.getCurrentUser();
+      if (!mounted) return;
       setState(() {
         _currentUsername = username;
       });
     } catch (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching current user: $error')),
       );
@@ -87,8 +94,9 @@ class _ReviewListPageState extends State<ReviewListPage> {
       _isLoading = true;
     });
 
-    // Delay 2 detik untuk menampilkan spinner lebih lama
+    // Delay 2 seconds to show the spinner longer
     await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
 
     try {
       int? ratingFilter;
@@ -101,28 +109,31 @@ class _ReviewListPageState extends State<ReviewListPage> {
         pageSize: _pageSize,
         rating: ratingFilter,
       );
+      if (!mounted) return;
 
       setState(() {
         if (fetchedReviews.isEmpty) {
-          // Tidak ada data yang didapat
           _hasMore = false;
         } else {
           _reviews.addAll(fetchedReviews);
           _currentPage++;
-          // Jika jumlah data yang diambil kurang dari _pageSize, berarti ini halaman terakhir
+          // If fewer than _pageSize reviews, no more pages
           if (fetchedReviews.length < _pageSize) {
             _hasMore = false;
           }
         }
       });
     } catch (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching reviews: $error')),
       );
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -143,11 +154,13 @@ class _ReviewListPageState extends State<ReviewListPage> {
   Future<void> _addAdminReply(int reviewId, String replyText) async {
     try {
       await _api.addAdminReply(reviewId: reviewId, replyText: replyText.trim());
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Reply added successfully!')),
       );
-      _refreshReviews();
+      await _refreshReviews();
     } catch (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error adding reply: $error')),
       );
@@ -157,6 +170,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
   Future<void> _deleteReview(int reviewId) async {
     try {
       await _api.deleteReview(reviewId);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Review deleted successfully!')),
       );
@@ -164,6 +178,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
         _reviews.removeWhere((r) => r.id == reviewId);
       });
     } catch (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error deleting review: $error')),
       );
@@ -238,6 +253,10 @@ class _ReviewListPageState extends State<ReviewListPage> {
       itemBuilder: (context, index) {
         if (index < _reviews.length) {
           final review = _reviews[index];
+
+          // If adminReplies is nullable, use this approach:
+          final hasAdminReplies = review.adminReplies.isNotEmpty;
+
           return Card(
             margin: const EdgeInsets.all(8.0),
             child: Padding(
@@ -271,7 +290,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
                   const SizedBox(height: 8),
                   Text('Rating: ${review.rating}/5'),
                   const SizedBox(height: 8),
-                  if (review.adminReplies != null && review.adminReplies.isNotEmpty)
+                  if (hasAdminReplies)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: review.adminReplies.map((reply) {
@@ -279,9 +298,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             "Admin Reply: ${reply.replyText} (${reply.adminUsername})",
-                            style: const TextStyle(
-                              fontStyle: FontStyle.italic,
-                            ),
+                            style: const TextStyle(fontStyle: FontStyle.italic),
                           ),
                         );
                       }).toList(),
@@ -307,9 +324,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
             ),
           );
         } else {
-          // Bagian ini hanya dijalankan jika _hasMore == true
-          // Jika _hasMore == false, itemCount tidak akan menambah 1
-          // sehingga spinner tidak akan muncul lagi
+          // Only show the spinner if we still have more data to load
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 16.0),
             child: Center(
@@ -320,19 +335,4 @@ class _ReviewListPageState extends State<ReviewListPage> {
       },
     );
   }
-}
-
-
-extension on ReviewEntry {
-  get adminReplies => null;
-}
-
-extension on ReviewApi {
-  isAdmin() {}
-  
-  void addAdminReply({required int reviewId, required String replyText}) {}
-
-  deleteReview(int reviewId) async {}
-  
-  getCurrentUser() {}
 }

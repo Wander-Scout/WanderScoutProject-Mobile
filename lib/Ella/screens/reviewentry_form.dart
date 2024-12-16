@@ -119,7 +119,6 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         try {
-                          // Send data to the backend
                           await submitReview(_reviewText, _rating);
 
                           if (context.mounted) {
@@ -129,7 +128,6 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                                 backgroundColor: Colors.green,
                               ),
                             );
-                            // Redirect to Review List Page
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -138,6 +136,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                             );
                           }
                         } catch (e) {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Error: $e"),
