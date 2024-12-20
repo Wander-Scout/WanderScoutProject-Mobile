@@ -11,6 +11,8 @@ import 'package:wanderscout/Ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
 import 'package:wanderscout/hh/screens/news.dart'; // Import the news page
 import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:wanderscout/Hafizh/screens/add_restaurant.dart';
+import 'package:wanderscout/Hafizh/screens/edit_restaurant.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -107,7 +109,26 @@ class LeftDrawer extends StatelessWidget {
               leading: const Icon(Icons.add_business, color: Colors.black),
               title: const Text('Add Restaurant'),
               onTap: () {
-                // Navigate to Add Restaurant page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddRestaurantScreen(),
+                  ),
+                );
+                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_business, color: Colors.black),
+              title: const Text('Edit Restaurant'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchAndEditRestaurantScreen(),
+                  ),
+                );
+                
               },
             ),
             ListTile(

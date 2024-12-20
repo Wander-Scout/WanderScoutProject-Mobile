@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import '../models/restaurant.dart'; // Adjust the path if necessary
 import '../services/restaurant_api.dart'; // Import RestaurantApi
 import 'package:wanderscout/Davin/widgets/left_drawer.dart'; // Import LeftDrawer
+import 'restaurant_detail.dart'; // Import RestaurantDetailScreen
 
 class RestaurantListScreen extends StatefulWidget {
-  const RestaurantListScreen({super.key});
 
+  const RestaurantListScreen({super.key});
   @override
   _RestaurantListScreenState createState() => _RestaurantListScreenState();
 }
@@ -45,7 +46,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             .toList();
         foodPreferences = [
           'All',
-          ...preferences.map((e) => e.displayName)
+          ...preferences.map((e) => e.displayName).toList()
         ];
 
         filteredRestaurants = List.from(allRestaurants);
@@ -190,58 +191,68 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: isSmallScreen
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Image Section
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: Image.asset(
-                                              getImageForFoodPreference(
-                                                  restaurant
-                                                      .foodPreference
-                                                      .displayName),
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              height: 200,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          RestaurantDetailScreen(
+                                              restaurant: restaurant),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: isSmallScreen
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Image Section
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                getImageForFoodPreference(
+                                                    restaurant.foodPreference
+                                                        .displayName),
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: 200,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          // Details Section
-                                          buildRestaurantDetails(restaurant),
-                                        ],
-                                      )
-                                    : Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Image Section
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: Image.asset(
-                                              getImageForFoodPreference(
-                                                  restaurant
-                                                      .foodPreference
-                                                      .displayName),
-                                              fit: BoxFit.cover,
-                                              width: 150,
-                                              height: 150,
+                                            const SizedBox(height: 8),
+                                            // Details Section
+                                            buildRestaurantDetails(restaurant),
+                                          ],
+                                        )
+                                      : Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Image Section
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                getImageForFoodPreference(
+                                                    restaurant.foodPreference
+                                                        .displayName),
+                                                fit: BoxFit.cover,
+                                                width: 150,
+                                                height: 150,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 16),
-                                          // Details Section
-                                          Expanded(
-                                            child: buildRestaurantDetails(
-                                                restaurant),
-                                          ),
-                                        ],
-                                      ),
+                                            const SizedBox(width: 16),
+                                            // Details Section
+                                            Expanded(
+                                              child: buildRestaurantDetails(
+                                                  restaurant),
+                                            ),
+                                          ],
+                                        ),
+                                ),
                               ),
                             );
                           } else {
@@ -305,3 +316,4 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     );
   }
 }
+

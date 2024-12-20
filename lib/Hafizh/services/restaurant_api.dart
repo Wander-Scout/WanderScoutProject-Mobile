@@ -1,4 +1,3 @@
-// restaurant_api.dart
 import 'dart:convert';
 import 'package:wanderscout/Hafizh/models/restaurant.dart'; // Adjust the path if necessary
 import 'package:wanderscout/Davin/API/api_service.dart';
@@ -30,5 +29,32 @@ class RestaurantApi {
     return jsonResponse.map((json) => Restaurant.fromJson(json)).toList();
   }
 
-  // Add more methods for other operations if necessary
+  // Add the editRestaurant method
+  Future<void> editRestaurant({
+    required String restaurantId,
+    required String name,
+    required FoodPreference foodPreference,
+    required int averagePrice,
+    required double rating,
+    required Atmosphere atmosphere,
+    required String foodVariety,
+  }) async {
+    final String url = '${_baseUrl}restaurant/edit/$restaurantId/';
+
+    final response = await _apiService.post(
+      url: url,
+      body: {
+        "name": name,
+        "food_preference": foodPreference.displayName,
+        "average_price": averagePrice,
+        "rating": rating,
+        "atmosphere": atmosphere.displayName,
+        "food_variety": foodVariety,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to edit restaurant: ${response.body}');
+    }
+  }
 }
