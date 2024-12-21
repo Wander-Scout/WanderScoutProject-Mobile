@@ -10,19 +10,32 @@ class AttractionDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width to adjust layout for small or large screens
     final screenWidth = MediaQuery.of(context).size.width;
     final bool isSmallScreen = screenWidth < 600;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(attraction.nama),
+        title: Text(
+          attraction.nama,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF313EBC),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: isSmallScreen
-            ? _buildColumnLayout(context)
-            : _buildRowLayout(context),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF313EBC), Color(0xFFA6ADEF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        constraints: const BoxConstraints.expand(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: isSmallScreen
+              ? _buildColumnLayout(context)
+              : _buildRowLayout(context),
+        ),
       ),
     );
   }
@@ -50,7 +63,6 @@ class AttractionDetailScreen extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    // Placeholder image logic; replace with actual image logic as needed
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Image.asset(
@@ -66,70 +78,61 @@ class AttractionDetailScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Name
         Text(
           attraction.nama,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 8),
-        // Rating
         Text(
           'Rating: ${attraction.voteAverage} / 5 (${attraction.voteCount} votes)',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 8),
-        // Type
         Text(
           'Type: ${attraction.type}',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 8),
-        // Prices
         Text(
           'Weekday Price: IDR ${attraction.htmWeekday}',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         Text(
           'Weekend Price: IDR ${attraction.htmWeekend}',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 16),
-        // Description
         Text(
           'Description:',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 4),
         Text(
           attraction.description,
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 16),
-        // Location (Latitude, Longitude)
         Text(
           'Location:',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 4),
         Text(
           'Latitude: ${attraction.latitude}',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         Text(
           'Longitude: ${attraction.longitude}',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 8),
-        // Google Maps URL
         InkWell(
           onTap: () async {
             final url = attraction.gmapsUrl;
             final canLaunch = await canLaunchUrl(Uri.parse(url));
-
             if (canLaunch) {
               await launchUrl(Uri.parse(url));
             } else if (context.mounted) {
-              // Check if widget is still mounted
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Could not launch Maps')),
               );
@@ -137,44 +140,40 @@ class AttractionDetailScreen extends StatelessWidget {
           },
           child: const Text(
             'View on Google Maps',
-            style: TextStyle(fontSize: 16, color: Colors.blue),
+            style: TextStyle(fontSize: 16, color: Colors.lightBlueAccent, decoration: TextDecoration.underline),
           ),
         ),
         const SizedBox(height: 16),
-            // Add to Cart Button
-            ElevatedButton(
-              onPressed: () => _addToCart(context),
-              child: const Text('Add to Cart'),
-            ),
-          ],
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+          ),
+          onPressed: () => _addToCart(context),
+          child: const Text('Add to Cart'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _addToCart(BuildContext context) async {
+    try {
+      await CartService.addToCart(attraction.id.toString(), 'attraction');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Attraction added to cart successfully!')),
         );
       }
-      // Function to add the attraction to the cart
-  Future<void> _addToCart(BuildContext context) async {
-  try {
-    await CartService.addToCart(attraction.id.toString(), 'attraction');
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Attraction added to cart successfully!')),
-      );
-    }
-  } catch (e) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add to cart: $e')),
-      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add to cart: $e')),
+        );
+      }
     }
   }
-}
 
   String getImageForAttractionType(String? type) {
-    final firstCategory = type
-            ?.split(',')
-            .first
-            .trim()
-            .replaceAll(' ', '')
-            .toLowerCase() ??
-        'placeholder';
+    final firstCategory = type?.split(',').first.trim().replaceAll(' ', '').toLowerCase() ?? 'placeholder';
     return 'lib/static/attractions/$firstCategory.png';
   }
 }

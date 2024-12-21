@@ -56,7 +56,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
         pageSize: _pageSize,
       );
 
-      if (!mounted) return; // Ensure widget is still mounted
+      if (!mounted) return;
 
       setState(() {
         _allAttractions.addAll(fetchedAttractions);
@@ -117,7 +117,7 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
-      if (!mounted) return; // Ensure widget is still mounted
+      if (!mounted) return;
 
       final nextItems = _filteredAttractions
           .skip(_displayedAttractions.length)
@@ -140,73 +140,78 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final bool isSmallScreen = screenWidth < 600;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tourist Attractions'),
+        backgroundColor: const Color(0xFF313EBC), // Warna solid, tanpa gradien
+        title: const Text(
+          'TOURIST ATTRACTIONS',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       drawer: const LeftDrawer(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    onChanged: (value) {
-                      _searchQuery = value;
-                      _filterAttractions();
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Search by name...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF313EBC), Color(0xFFA6ADEF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      onChanged: (value) {
+                        _searchQuery = value;
+                        _filterAttractions();
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Search by name...',
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        prefixIcon: const Icon(Icons.search, color: Colors.blue),
                       ),
-                      prefixIcon: const Icon(Icons.search),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 1,
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: _selectedType,
-                    items: _availableTypes
-                        .map((type) => DropdownMenuItem<String>(
-                              value: type,
-                              child: Text(type),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedType = value;
-                          _filterAttractions();
-                        });
-                      }
-                    },
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 1,
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: _selectedType,
+                      items: _availableTypes
+                          .map((type) => DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(type),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedType = value;
+                            _filterAttractions();
+                          });
+                        }
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: _allAttractions.isEmpty && !_isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : NotificationListener<ScrollNotification>(
-                    onNotification: (scrollInfo) {
-                      if (scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent) {
-                        _loadMoreAttractions();
-                      }
-                      return false;
-                    },
-                    child: ListView.builder(
+            Expanded(
+              child: _allAttractions.isEmpty && !_isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
                       controller: _scrollController,
                       padding: const EdgeInsets.all(16.0),
                       itemCount:
@@ -215,12 +220,18 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                         if (index < _displayedAttractions.length) {
                           final attraction = _displayedAttractions[index];
 
-                          return Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.only(bottom: 16.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                          return Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFFFFFFFF), Color(0xFF7FDCEC)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(16),
+                              ),
                             ),
+                            margin: const EdgeInsets.only(bottom: 16.0),
                             child: InkWell(
                               onTap: () {
                                 if (mounted) {
@@ -235,49 +246,26 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                                 }
                               },
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: isSmallScreen
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: Image.asset(
-                                              getImageForAttractionType(
-                                                  attraction.type),
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              height: 200,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          buildAttractionDetails(attraction),
-                                        ],
-                                      )
-                                    : Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: Image.asset(
-                                              getImageForAttractionType(
-                                                  attraction.type),
-                                              fit: BoxFit.cover,
-                                              width: 150,
-                                              height: 150,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 16),
-                                          Expanded(
-                                            child: buildAttractionDetails(
-                                                attraction),
-                                          ),
-                                        ],
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Image.asset(
+                                        getImageForAttractionType(
+                                            attraction.type),
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: 100,
                                       ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: buildAttractionDetails(
+                                          attraction),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -287,9 +275,9 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
                         }
                       },
                     ),
-                  ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -299,36 +287,49 @@ class _TouristAttractionScreenState extends State<TouristAttractionScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          attraction.nama,
+          attraction.nama.toUpperCase(),
           style: const TextStyle(
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.blue,
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Rating: ${attraction.voteAverage} / 5',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(
+            color: Colors.black, // Ubah menjadi hitam
+            fontSize: 16,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           'Type: ${attraction.type}',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(
+            color: Colors.black, // Ubah menjadi hitam
+            fontSize: 16,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
-          'Weekday Price: IDR ${attraction.htmWeekday}',
-          style: const TextStyle(color: Colors.grey),
+          'Weekday Price: Rp ${attraction.htmWeekday}',
+          style: const TextStyle(
+            color: Colors.black, // Ubah menjadi hitam
+            fontSize: 16,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
-          'Weekend Price: IDR ${attraction.htmWeekend}',
-          style: const TextStyle(color: Colors.grey),
+          'Weekend Price: Rp ${attraction.htmWeekend}',
+          style: const TextStyle(
+            color: Colors.black, // Ubah menjadi hitam
+            fontSize: 16,
+          ),
         ),
       ],
     );
   }
+
 
   @override
   void dispose() {
