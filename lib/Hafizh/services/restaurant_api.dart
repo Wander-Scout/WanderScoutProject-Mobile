@@ -1,10 +1,13 @@
 import 'dart:convert';
-import 'package:wanderscout/Hafizh/models/restaurant.dart'; // Adjust the path if necessary
+import 'package:wanderscout/Hafizh/models/restaurant.dart'; 
 import 'package:wanderscout/Davin/API/api_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+
 
 class RestaurantApi {
   final ApiService _apiService;
-  final String _baseUrl = 'http://127.0.0.1:8000/restaurant/';
+  final String? baseUrl = dotenv.env['BASE_URL'];
 
   // Initialize the API service
   RestaurantApi() : _apiService = ApiService();
@@ -12,7 +15,7 @@ class RestaurantApi {
   Future<List<Restaurant>> fetchRestaurants() async {
     // Make the GET request
     final response = await _apiService.get(
-      url: '${_baseUrl}api_restaurant/',
+      url: '${baseUrl}restaurant/api_restaurant/',
     );
 
     // Check for HTTP errors
@@ -39,7 +42,7 @@ class RestaurantApi {
     required Atmosphere atmosphere,
     required String foodVariety,
   }) async {
-    final String url = '${_baseUrl}edit/$restaurantId/';
+    final String url = '${baseUrl}restaurant/edit/$restaurantId/';
 
     final response = await _apiService.post(
       url: url,
@@ -59,7 +62,7 @@ class RestaurantApi {
   }
 
   Future<void> deleteRestaurant(String restaurantId) async {
-    final String url = '${_baseUrl}delete/$restaurantId/';
+    final String url = '${baseUrl}restaurant/delete/$restaurantId/';
 
     final response = await _apiService.delete(url: url);
 

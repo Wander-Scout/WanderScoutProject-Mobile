@@ -3,6 +3,7 @@ import 'package:wanderscout/Hafizh/models/restaurant.dart';
 import 'package:wanderscout/Hafizh/services/restaurant_api.dart';
 import 'package:wanderscout/Davin/widgets/left_drawer.dart';
 
+
 class SearchAndDeleteRestaurantScreen extends StatefulWidget {
   const SearchAndDeleteRestaurantScreen({super.key});
 
