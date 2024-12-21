@@ -34,7 +34,7 @@ Future<void> _login() async {
   try {
     // Make the login request
     final response = await request.login(
-      "$baseUrl/authentication/flutter_login/",
+      "${baseUrl}authentication/flutter_login/",
       {'username': username, 'password': password},
     );
 
