@@ -1,4 +1,3 @@
-// hafizh/screens/restaurant_list.dart
 import 'package:flutter/material.dart';
 import '../models/restaurant.dart'; // Adjust the path if necessary
 import '../services/restaurant_api.dart'; // Import RestaurantApi
@@ -6,14 +5,14 @@ import 'package:wanderscout/Davin/widgets/left_drawer.dart'; // Import LeftDrawe
 import 'restaurant_detail.dart'; // Import RestaurantDetailScreen
 
 class RestaurantListScreen extends StatefulWidget {
-
   const RestaurantListScreen({super.key});
+
   @override
-  _RestaurantListScreenState createState() => _RestaurantListScreenState();
+  RestaurantListScreenState createState() => RestaurantListScreenState();
 }
 
-class _RestaurantListScreenState extends State<RestaurantListScreen> {
-  final RestaurantApi _restaurantApi = RestaurantApi(); // Use RestaurantApi
+class RestaurantListScreenState extends State<RestaurantListScreen> {
+  final RestaurantApi _restaurantApi = RestaurantApi();
 
   List<Restaurant> displayedRestaurants = [];
   List<Restaurant> allRestaurants = [];
@@ -33,8 +32,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   Future<void> fetchRestaurants() async {
     try {
-      // Fetch restaurants using RestaurantApi
       final restaurants = await _restaurantApi.fetchRestaurants();
+      if (!mounted) return;
 
       setState(() {
         allRestaurants = restaurants;
@@ -46,20 +45,20 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             .toList();
         foodPreferences = [
           'All',
-          ...preferences.map((e) => e.displayName).toList()
+          ...preferences.map((e) => e.displayName)
         ];
 
         filteredRestaurants = List.from(allRestaurants);
         displayedRestaurants = filteredRestaurants.take(pageSize).toList();
       });
     } catch (error) {
-      print('Error fetching restaurants: $error');
+      // Use debugPrint instead of print
+      debugPrint('Error fetching restaurants: $error');
     }
   }
 
   void filterRestaurants() {
     setState(() {
-      // Apply both the food preference filter and search query
       filteredRestaurants = allRestaurants.where((restaurant) {
         final matchesFoodPreference = selectedFoodPreference == 'All' ||
             restaurant.foodPreference.displayName == selectedFoodPreference;
@@ -69,14 +68,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         return matchesFoodPreference && matchesSearchQuery;
       }).toList();
 
-      // Reset displayedRestaurants for pagination
       displayedRestaurants = filteredRestaurants.take(pageSize).toList();
     });
   }
 
   void loadMoreRestaurants() {
-    if (displayedRestaurants.length >= filteredRestaurants.length ||
-        isLoading) {
+    if (displayedRestaurants.length >= filteredRestaurants.length || isLoading) {
       return;
     }
 
@@ -85,10 +82,11 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
       final nextItems = filteredRestaurants
           .skip(displayedRestaurants.length)
-          .take(pageSize)
-          .toList();
+          .take(pageSize);
+
       setState(() {
         displayedRestaurants.addAll(nextItems);
         isLoading = false;
@@ -104,10 +102,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // Determine if the layout should be vertical (for small screens)
     final bool isSmallScreen = screenWidth < 600;
 
     return Scaffold(
@@ -198,7 +193,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           RestaurantDetailScreen(
-                                              restaurant: restaurant),
+                                        restaurant: restaurant,
+                                      ),
                                     ),
                                   );
                                 },

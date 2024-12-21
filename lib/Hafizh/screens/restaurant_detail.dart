@@ -1,25 +1,20 @@
-// restaurant_detail.dart
 import 'package:flutter/material.dart';
 import '../models/restaurant.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantDetailScreen({Key? key, required this.restaurant})
-      : super(key: key);
+  const RestaurantDetailScreen({super.key, required this.restaurant});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final bool isSmallScreen = screenWidth < 600;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
           restaurant.name,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color(0xFF1E3A8A),
+        backgroundColor: const Color(0xFF1E3A8A),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -81,15 +76,23 @@ class RestaurantDetailScreen extends StatelessWidget {
                       color: Colors.blueGrey,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    restaurant.foodVariety ?? "No variety available",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
+
+                  // Template Description
+                    const SizedBox(height: 8),
+                    Text(
+                      "${restaurant.name} is a popular destination for food enthusiasts looking for ${restaurant.foodPreference.displayName} cuisine. "
+                      "The restaurant offers a unique atmosphere with a ${restaurant.atmosphere.displayName} vibe, "
+                      "and its signature dishes are known for their ${restaurant.foodVariety.toLowerCase()}. With an average price of Rp ${restaurant.averagePrice}, "
+                      "${restaurant.name} is a perfect choice for those seeking a ${restaurant.atmosphere.displayName} dining experience. "
+                      "Rated ${restaurant.rating}/5, it’s no wonder ${restaurant.name} is a favorite among locals and tourists alike.",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.justify,
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 8),
+                  
 
                   // Key Information Section
                   const Text(
@@ -101,10 +104,11 @@ class RestaurantDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  _buildInfoRow("Food Preference", restaurant.foodPreference.displayName ?? "Unknown"),
+                  _buildInfoRow("Food Preference", restaurant.foodPreference.displayName),
                   _buildInfoRow("Rating", "${restaurant.rating} / 5"),
                   _buildInfoRow("Average Price", "Rp ${restaurant.averagePrice}"),
-                  _buildInfoRow("Atmosphere", restaurant.atmosphere.displayName ?? "Unknown"),
+                  _buildInfoRow("Atmosphere", restaurant.atmosphere.displayName),
+                  _buildInfoRow("Food Varietys", restaurant.foodVariety),
 
                   const SizedBox(height: 16),
 
@@ -142,15 +146,14 @@ class RestaurantDetailScreen extends StatelessWidget {
                             // Add to cart logic here
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white, // Replaces 'primary'
-                            foregroundColor: Colors.blue[600], // Replaces 'onPrimary'
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.blue[600],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32),
                             ),
                           ),
                           child: const Text("Add to Plan"),
                         ),
-
                       ],
                     ),
                   ),
@@ -188,9 +191,8 @@ class RestaurantDetailScreen extends StatelessWidget {
     );
   }
 
-  String getImageForFoodPreference(String? foodPreference) {
-    final typeValue =
-        foodPreference?.toLowerCase().replaceAll(' ', '') ?? 'placeholder';
+  String getImageForFoodPreference(String foodPreference) {
+    final typeValue = foodPreference.toLowerCase().replaceAll(' ', '');
     return 'lib/static/food_pref/$typeValue.jpg';
   }
 }

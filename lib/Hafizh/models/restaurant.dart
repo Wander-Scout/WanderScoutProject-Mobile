@@ -47,14 +47,14 @@ class Restaurant {
       };
 }
 
-enum Atmosphere { FORMAL, SANTAI }
+enum Atmosphere { formal, santai }
 
 extension AtmosphereExtension on Atmosphere {
   String get displayName {
     switch (this) {
-      case Atmosphere.FORMAL:
+      case Atmosphere.formal:
         return "Formal";
-      case Atmosphere.SANTAI:
+      case Atmosphere.santai:
         return "Santai";
     }
   }
@@ -62,9 +62,9 @@ extension AtmosphereExtension on Atmosphere {
   static Atmosphere fromString(String value) {
     switch (value) {
       case "Formal":
-        return Atmosphere.FORMAL;
+        return Atmosphere.formal;
       case "Santai":
-        return Atmosphere.SANTAI;
+        return Atmosphere.santai;
       default:
         throw Exception("Unknown atmosphere: $value");
     }
@@ -72,25 +72,25 @@ extension AtmosphereExtension on Atmosphere {
 }
 
 enum FoodPreference {
-  CHINESE,
-  INDONESIA,
-  JAPANESE,
-  MIDDLE_EASTERN,
-  WESTERN,
+  chinese,
+  indonesia,
+  japanese,
+  middleEastern,
+  western,
 }
 
 extension FoodPreferenceExtension on FoodPreference {
   String get displayName {
     switch (this) {
-      case FoodPreference.CHINESE:
+      case FoodPreference.chinese:
         return "Chinese";
-      case FoodPreference.INDONESIA:
+      case FoodPreference.indonesia:
         return "Indonesia";
-      case FoodPreference.JAPANESE:
+      case FoodPreference.japanese:
         return "Japanese";
-      case FoodPreference.MIDDLE_EASTERN:
+      case FoodPreference.middleEastern:
         return "Middle Eastern";
-      case FoodPreference.WESTERN:
+      case FoodPreference.western:
         return "Western";
     }
   }
@@ -98,15 +98,15 @@ extension FoodPreferenceExtension on FoodPreference {
   static FoodPreference fromString(String value) {
     switch (value) {
       case "Chinese":
-        return FoodPreference.CHINESE;
+        return FoodPreference.chinese;
       case "Indonesia":
-        return FoodPreference.INDONESIA;
+        return FoodPreference.indonesia;
       case "Japanese":
-        return FoodPreference.JAPANESE;
+        return FoodPreference.japanese;
       case "Middle Eastern":
-        return FoodPreference.MIDDLE_EASTERN;
+        return FoodPreference.middleEastern;
       case "Western":
-        return FoodPreference.WESTERN;
+        return FoodPreference.western;
       default:
         throw Exception("Unknown food preference: $value");
     }

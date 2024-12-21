@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:wanderscout/Hafizh/screens/delete_restaurant.dart';
 import 'package:wanderscout/kez/screens/cart_screen.dart';
 import 'package:wanderscout/Davin/screens/login.dart';
 import 'package:wanderscout/Davin/screens/tourist_attraction_list.dart';
@@ -13,6 +14,7 @@ import 'package:wanderscout/hh/screens/news.dart'; // Import the news page
 import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
 import 'package:wanderscout/Hafizh/screens/add_restaurant.dart';
 import 'package:wanderscout/Hafizh/screens/edit_restaurant.dart';
+import 'package:wanderscout/Hafizh/screens/edit_profile.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -119,7 +121,7 @@ class LeftDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.add_business, color: Colors.black),
+              leading: const Icon(Icons.edit_sharp, color: Colors.black),
               title: const Text('Edit Restaurant'),
               onTap: () {
                 Navigator.push(
@@ -128,7 +130,18 @@ class LeftDrawer extends StatelessWidget {
                     builder: (context) => const SearchAndEditRestaurantScreen(),
                   ),
                 );
-                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.black),
+              title: const Text('Delete Restaurant'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchAndDeleteRestaurantScreen(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -159,6 +172,18 @@ class LeftDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CartScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.person, color: Colors.black),
+            title: const Text('Edit Profile'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(),
                 ),
               );
             },
@@ -212,6 +237,7 @@ class LeftDrawer extends StatelessWidget {
                   }
                 }
               } catch (e) {
+                if (!context.mounted) return; // Double-check before using context
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text("Error during logout: $e"),

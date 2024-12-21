@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;
-import 'package:url_launcher/url_launcher.dart';  // Import url_launcher
+import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
 
   @override
-  _NewsPageState createState() => _NewsPageState();
+  NewsPageState createState() => NewsPageState();
 }
 
-class _NewsPageState extends State<NewsPage> {
+class NewsPageState extends State<NewsPage> {
   List<Map<String, String>> headlines = [];
 
   @override
@@ -21,11 +21,13 @@ class _NewsPageState extends State<NewsPage> {
 
   // Fetch data from RSS feed
   Future<void> fetchNews() async {
-    final response = await http.get(Uri.parse('https://jogja.antaranews.com/rss/pariwisata-budaya.xml'));
+    final response = await http.get(
+      Uri.parse('https://jogja.antaranews.com/rss/pariwisata-budaya.xml'),
+    );
 
     if (response.statusCode == 200) {
-      var document = xml.XmlDocument.parse(response.body);
-      var items = document.findAllElements('item');
+      final document = xml.XmlDocument.parse(response.body);
+      final items = document.findAllElements('item');
 
       setState(() {
         headlines = items.map((node) {
@@ -82,10 +84,11 @@ class _NewsPageState extends State<NewsPage> {
     );
   }
 
-  // Open URL in a browser
+  // Open URL in a browser using launchUrl
   Future<void> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $url';
     }
