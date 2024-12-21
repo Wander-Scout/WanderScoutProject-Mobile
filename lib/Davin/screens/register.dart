@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
       try {
         // Send the POST request
         final response = await request.post(
-          "$baseUrl/authentication/register-flutter/",
+          "${baseUrl}authentication/register-flutter/",
           jsonEncode({
             "username": username,
             "password1": password1,
