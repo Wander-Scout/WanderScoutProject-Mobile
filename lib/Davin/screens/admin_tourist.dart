@@ -250,7 +250,7 @@ class _AdminTouristAttractionScreenState
                           color: Colors.white,
                         ),
                         filled: true,
-                        fillColor: Colors.white.withValues(0.2), // Transparan putih
+                        fillColor: const Color.fromRGBO(255, 255, 255, 0.2), // Transparan putih
                       ),
                       style: const TextStyle(color: Colors.white),
                     ),
@@ -262,7 +262,7 @@ class _AdminTouristAttractionScreenState
                     child: DropdownButtonFormField<String>(
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.white.withValues(0.8),
+                        fillColor: const Color.fromRGBO(255, 255, 255, 0.8),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
@@ -307,8 +307,7 @@ class _AdminTouristAttractionScreenState
                       child: ListView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.all(16.0),
-                        itemCount:
-                            _displayedAttractions.length + (_isLoading ? 1 : 0),
+                        itemCount: _displayedAttractions.length + (_isLoading ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index < _displayedAttractions.length) {
                             final attraction = _displayedAttractions[index];
@@ -335,16 +334,12 @@ class _AdminTouristAttractionScreenState
                                   padding: const EdgeInsets.all(8.0),
                                   child: isSmallScreen
                                       ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              borderRadius: BorderRadius.circular(8),
                                               child: Image.asset(
-                                                getImageForAttractionType(
-                                                  attraction.type,
-                                                ),
+                                                getImageForAttractionType(attraction.type),
                                                 fit: BoxFit.cover,
                                                 width: double.infinity,
                                                 height: 200,
@@ -357,16 +352,12 @@ class _AdminTouristAttractionScreenState
                                           ],
                                         )
                                       : Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              borderRadius: BorderRadius.circular(8),
                                               child: Image.asset(
-                                                getImageForAttractionType(
-                                                  attraction.type,
-                                                ),
+                                                getImageForAttractionType(attraction.type),
                                                 fit: BoxFit.cover,
                                                 width: 150,
                                                 height: 150,
@@ -375,11 +366,9 @@ class _AdminTouristAttractionScreenState
                                             const SizedBox(width: 16),
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  buildAttractionDetails(
-                                                      attraction),
+                                                  buildAttractionDetails(attraction),
                                                   const SizedBox(height: 8),
                                                   buildAdminButtons(attraction),
                                                 ],
@@ -409,7 +398,6 @@ class _AdminTouristAttractionScreenState
       ),
     );
   }
-
 
   Widget buildAttractionDetails(TouristAttraction attraction) {
     return Column(
@@ -483,6 +471,7 @@ class _AdminTouristAttractionScreenState
 }
 
 extension on Color {
+  // ignore: unused_element
   withValues(double d) {}
 }
 
@@ -1069,4 +1058,4 @@ final List<String> _typeOptions = [
       ),
     );
   }
-}
+} 
