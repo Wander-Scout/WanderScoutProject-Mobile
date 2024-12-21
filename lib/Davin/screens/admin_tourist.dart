@@ -99,7 +99,7 @@ class _AdminTouristAttractionScreenState
   void _loadMoreAttractions() {
     if (_displayedAttractions.length >= _filteredAttractions.length ||
         _isLoading ||
-        !_hasMore) return;
+        !_hasMore) { return; }
 
     setState(() => _isLoading = true);
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -124,6 +124,7 @@ class _AdminTouristAttractionScreenState
   }
 
   Future<void> _deleteAttraction(TouristAttraction attraction) async {
+    final messenger = ScaffoldMessenger.of(context);
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -149,11 +150,11 @@ class _AdminTouristAttractionScreenState
           _filteredAttractions.removeWhere((item) => item.id == attraction.id);
           _displayedAttractions.removeWhere((item) => item.id == attraction.id);
         });
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(content: Text('Attraction deleted successfully')),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(content: Text('Error deleting attraction: $e')),
         );
       }
@@ -424,7 +425,7 @@ class _AdminTouristAttractionScreenState
 }
 
 class AddAttractionScreen extends StatefulWidget {
-  const AddAttractionScreen({Key? key}) : super(key: key);
+  const AddAttractionScreen({super.key});
 
   @override
   State<AddAttractionScreen> createState() => _AddAttractionScreenState();
@@ -696,8 +697,7 @@ final List<String> _typeOptions = [
 class EditAttractionScreen extends StatefulWidget {
   final TouristAttraction attraction;
 
-  const EditAttractionScreen({Key? key, required this.attraction})
-      : super(key: key);
+  const EditAttractionScreen({super.key, required this.attraction});
 
   @override
   State<EditAttractionScreen> createState() => _EditAttractionScreenState();
