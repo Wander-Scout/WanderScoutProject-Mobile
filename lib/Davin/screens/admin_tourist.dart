@@ -206,153 +206,191 @@ class _AdminTouristAttractionScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin - Tourist Attractions'),
+        title: const Text(
+          'Admin - Tourist Attractions',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF313EBC), // Warna biru tua untuk AppBar
       ),
-      body: Column(
-        children: [
-          // Search & Filter
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                // Search by name
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    onChanged: (value) {
-                      _searchQuery = value;
-                      _filterAttractions();
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Search by name...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF313EBC), // Biru tua
+              Color(0xFF87CEFA), // Biru terang
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            // Search & Filter
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  // Search by name
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      onChanged: (value) {
+                        _searchQuery = value;
+                        _filterAttractions();
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Search by name...',
+                        labelStyle: const TextStyle(color: Colors.white),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                        ),
+                        filled: true,
+                        fillColor: const Color.fromRGBO(255, 255, 255, 0.2), // Transparan putih
                       ),
-                      prefixIcon: const Icon(Icons.search),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                // Filter by type
-                Expanded(
-                  flex: 1,
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: _selectedType,
-                    items: _availableTypes
-                        .map((type) => DropdownMenuItem<String>(
-                              value: type,
-                              child: Text(type),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedType = value;
-                          _filterAttractions();
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // List of attractions
-          Expanded(
-            child: _allAttractions.isEmpty && !_isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : NotificationListener<ScrollNotification>(
-                    onNotification: (scrollInfo) {
-                      if (scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent) {
-                        _loadMoreAttractions();
-                      }
-                      return false;
-                    },
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(16.0),
-                      itemCount:
-                          _displayedAttractions.length + (_isLoading ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index < _displayedAttractions.length) {
-                          final attraction = _displayedAttractions[index];
-                          return Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.only(bottom: 16.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: isSmallScreen
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.asset(
-                                            getImageForAttractionType(
-                                              attraction.type,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            width: double.infinity,
-                                            height: 200,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        buildAttractionDetails(attraction),
-                                        const SizedBox(height: 8),
-                                        buildAdminButtons(attraction),
-                                      ],
-                                    )
-                                  : Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.asset(
-                                            getImageForAttractionType(
-                                              attraction.type,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            width: 150,
-                                            height: 150,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 16),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              buildAttractionDetails(
-                                                  attraction),
-                                              const SizedBox(height: 8),
-                                              buildAdminButtons(attraction),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                          );
-                        } else {
-                          // Loading indicator at the bottom
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                  const SizedBox(width: 8),
+                  // Filter by type
+                  Expanded(
+                    flex: 1,
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(255, 255, 255, 0.8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      dropdownColor: Colors.white,
+                      value: _selectedType,
+                      items: _availableTypes
+                          .map((type) => DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(
+                                  type,
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedType = value;
+                            _filterAttractions();
+                          });
                         }
                       },
                     ),
                   ),
-          ),
-        ],
+                ],
+              ),
+            ),
+            // List of attractions
+            Expanded(
+              child: _allAttractions.isEmpty && !_isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        if (scrollInfo.metrics.pixels ==
+                            scrollInfo.metrics.maxScrollExtent) {
+                          _loadMoreAttractions();
+                        }
+                        return false;
+                      },
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: _displayedAttractions.length + (_isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index < _displayedAttractions.length) {
+                            final attraction = _displayedAttractions[index];
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFFFFF), // Putih
+                                    Color(0xFF87CEFA), // Biru terang (gradient)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              margin: const EdgeInsets.only(bottom: 16.0),
+                              child: Card(
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                color: Colors.transparent,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: isSmallScreen
+                                      ? Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                getImageForAttractionType(attraction.type),
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: 200,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            buildAttractionDetails(attraction),
+                                            const SizedBox(height: 8),
+                                            buildAdminButtons(attraction),
+                                          ],
+                                        )
+                                      : Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                getImageForAttractionType(attraction.type),
+                                                fit: BoxFit.cover,
+                                                width: 150,
+                                                height: 150,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 16),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  buildAttractionDetails(attraction),
+                                                  const SizedBox(height: 8),
+                                                  buildAdminButtons(attraction),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            // Loading indicator at the bottom
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToAddPage,
@@ -370,28 +408,36 @@ class _AdminTouristAttractionScreenState
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.blue,
+            color: Colors.black, // Teks nama menjadi hitam
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Rating: ${attraction.voteAverage} / 5',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(
+            color: Colors.black, // Teks rating menjadi hitam
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           'Type: ${attraction.type}',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(
+            color: Colors.black, // Teks type menjadi hitam
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           'Weekday Price: IDR ${attraction.htmWeekday}',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(
+            color: Colors.black, // Teks weekday price menjadi hitam
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           'Weekend Price: IDR ${attraction.htmWeekend}',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(
+            color: Colors.black, // Teks weekend price menjadi hitam
+          ),
         ),
       ],
     );
@@ -422,6 +468,11 @@ class _AdminTouristAttractionScreenState
     _scrollController.dispose();
     super.dispose();
   }
+}
+
+extension on Color {
+  // ignore: unused_element
+  withValues(double d) {}
 }
 
 class AddAttractionScreen extends StatefulWidget {
@@ -800,6 +851,7 @@ final List<String> _typeOptions = [
     return null;
   }
 
+  // ignore: unused_element
   String? _doubleValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'This field cannot be empty';
@@ -853,142 +905,157 @@ final List<String> _typeOptions = [
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Attraction'),
+        title: const Text(
+          'Edit Attraction',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF313EBC), // Samakan dengan warna atas gradien
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              // No
-              TextFormField(
-                controller: _noController,
-                decoration: const InputDecoration(labelText: 'No'),
-                validator: _intValidator,
-                keyboardType: TextInputType.number,
-              ),
-
-              // Name
-              TextFormField(
-                controller: _namaController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: _nonEmptyValidator,
-              ),
-
-              // Rating slider
-              const SizedBox(height: 12),
-              const Text('Rating (0-5)'),
-              Slider(
-                value: _rating,
-                min: 0,
-                max: 5,
-                divisions: 5,
-                label: _rating.toString(),
-                onChanged: (double value) {
-                  setState(() => _rating = value);
-                },
-              ),
-
-              // Vote Average slider
-              const SizedBox(height: 12),
-              const Text('Vote Average (0-5)'),
-              Slider(
-                value: _voteAverage,
-                min: 0,
-                max: 5,
-                divisions: 5,
-                label: _voteAverage.toString(),
-                onChanged: (double value) {
-                  setState(() => _voteAverage = value);
-                },
-              ),
-
-              // Vote Count
-              TextFormField(
-                controller: _voteCountController,
-                decoration: const InputDecoration(labelText: 'Vote Count'),
-                validator: _intValidator,
-                keyboardType: TextInputType.number,
-              ),
-
-              // Type dropdown
-              const SizedBox(height: 12),
-              const Text('Select Type'),
-              DropdownButtonFormField<String>(
-                value: _selectedType,
-                items: _typeOptions
-                    .map((type) => DropdownMenuItem<String>(
-                          value: type,
-                          child: Text(type),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedType = value);
-                  }
-                },
-              ),
-
-              // Weekday Price
-              TextFormField(
-                controller: _htmWeekdayController,
-                decoration:
-                    const InputDecoration(labelText: 'Weekday Price (IDR)'),
-                validator: _intValidator,
-                keyboardType: TextInputType.number,
-              ),
-
-              // Weekend Price
-              TextFormField(
-                controller: _htmWeekendController,
-                decoration:
-                    const InputDecoration(labelText: 'Weekend Price (IDR)'),
-                validator: _intValidator,
-                keyboardType: TextInputType.number,
-              ),
-
-              // Description
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                validator: _nonEmptyValidator,
-              ),
-
-              // Google Maps URL
-              TextFormField(
-                controller: _gmapsUrlController,
-                decoration: const InputDecoration(labelText: 'Google Maps URL'),
-                validator: _nonEmptyValidator,
-              ),
-
-              // Latitude
-              TextFormField(
-                controller: _latitudeController,
-                decoration: const InputDecoration(labelText: 'Latitude'),
-                validator: _doubleValidator,
-                keyboardType: TextInputType.number,
-              ),
-
-              // Longitude
-              TextFormField(
-                controller: _longitudeController,
-                decoration: const InputDecoration(labelText: 'Longitude'),
-                validator: _doubleValidator,
-                keyboardType: TextInputType.number,
-              ),
-
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _isSubmitting ? null : _submitForm,
-                child: _isSubmitting
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Update Attraction'),
-              ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF313EBC), // Dark blue
+              Color(0xFF87CEFA), // Light blue
             ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                TextFormField(
+                  controller: _noController,
+                  decoration: const InputDecoration(labelText: 'No'),
+                  validator: _intValidator,
+                  keyboardType: TextInputType.number,
+                ),
+
+     
+                TextFormField(
+                  controller: _namaController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  validator: _nonEmptyValidator,
+                ),
+
+       
+                const SizedBox(height: 12),
+                const Text('Rating (0-5)'),
+                Slider(
+                  value: _rating,
+                  min: 0,
+                  max: 5,
+                  divisions: 5,
+                  label: _rating.toString(),
+                  onChanged: (double value) {
+                    setState(() => _rating = value);
+                  },
+                ),
+
+  
+                const SizedBox(height: 12),
+                const Text('Vote Average (0-5)'),
+                Slider(
+                  value: _voteAverage,
+                  min: 0,
+                  max: 5,
+                  divisions: 5,
+                  label: _voteAverage.toString(),
+                  onChanged: (double value) {
+                    setState(() => _voteAverage = value);
+                  },
+                ),
+
+ 
+                TextFormField(
+                  controller: _voteCountController,
+                  decoration: const InputDecoration(labelText: 'Vote Count'),
+                  validator: _intValidator,
+                  keyboardType: TextInputType.number,
+                ),
+
+        
+                const SizedBox(height: 12),
+                const Text('Select Type'),
+                DropdownButtonFormField<String>(
+                  value: _selectedType,
+                  items: _typeOptions
+                      .map((type) => DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _selectedType = value);
+                    }
+                  },
+                ),
+
+        
+                TextFormField(
+                  controller: _htmWeekdayController,
+                  decoration:
+                      const InputDecoration(labelText: 'Weekday Price (IDR)'),
+                  validator: _intValidator,
+                  keyboardType: TextInputType.number,
+                ),
+
+              
+                TextFormField(
+                  controller: _htmWeekendController,
+                  decoration:
+                      const InputDecoration(labelText: 'Weekend Price (IDR)'),
+                  validator: _intValidator,
+                  keyboardType: TextInputType.number,
+                ),
+
+               
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                  validator: _nonEmptyValidator,
+                ),
+
+                
+                TextFormField(
+                  controller: _gmapsUrlController,
+                  decoration: const InputDecoration(labelText: 'Google Maps URL'),
+                  validator: _nonEmptyValidator,
+                ),
+
+                
+                TextFormField(
+                  controller: _latitudeController,
+                  decoration: const InputDecoration(labelText: 'Latitude'),
+                  validator: _doubleValidator,
+                  keyboardType: TextInputType.number,
+                ),
+
+                
+                TextFormField(
+                  controller: _longitudeController,
+                  decoration: const InputDecoration(labelText: 'Longitude'),
+                  validator: _doubleValidator,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _isSubmitting ? null : _submitForm,
+                  child: _isSubmitting
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('Update Attraction'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-}
+} 

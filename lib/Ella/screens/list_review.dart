@@ -191,13 +191,13 @@ class _ReviewListPageState extends State<ReviewListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Customer Reviews'),
-        backgroundColor: Colors.blue.shade800,
+        backgroundColor: const Color(0xFF313EBC), // Solid color for title
       ),
       drawer: const LeftDrawer(),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF313EBC), Color(0xFFA6ADEF)], // Blue gradient for background
+            colors: [Color(0xFF313EBC), Color(0xFFA6ADEF)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -213,7 +213,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   DropdownButton<String>(
-                    dropdownColor: Color(0xFFA6ADEF),
+                    dropdownColor: const Color(0xFFA6ADEF),
                     value: _selectedRating,
                     onChanged: (String? newValue) {
                       setState(() {
@@ -234,7 +234,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
                   const SizedBox(width: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFA6ADEF),
+                      backgroundColor: const Color(0xFFA6ADEF),
                     ),
                     onPressed: _refreshReviews,
                     child: const Text('Apply'),
@@ -280,8 +280,8 @@ class _ReviewListPageState extends State<ReviewListPage> {
             elevation: 5,
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFB27FEC), Color(0xFFFFFFFF)], // Purple gradient for cards
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFB27FEC), Color(0xFFFFFFFF)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),

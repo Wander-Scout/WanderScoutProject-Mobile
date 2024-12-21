@@ -285,6 +285,7 @@ class ManageRestaurantsScreenState extends State<ManageRestaurantsScreen> {
                   ? 'Add Restaurant'
                   : 'Manage Restaurants',
         ),
+        backgroundColor: Color(0xFF313EBC), // Ganti warna AppBar menjadi biru tua
         leading: _selectedRestaurant != null
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -300,15 +301,34 @@ class ManageRestaurantsScreenState extends State<ManageRestaurantsScreen> {
         ],
       ),
       drawer: const LeftDrawer(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _selectedRestaurant != null
-              ? _buildEditForm()
-              : _isAddMode
-                  ? _buildAddForm()
-                  : _buildSearchAndList(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF313EBC), // Warna biru tua
+              Color(0xFFA6ADEF), // Warna biru muda
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF313EBC)),
+                ),
+              )
+            : _selectedRestaurant != null
+                ? _buildEditForm()
+                : _isAddMode
+                    ? _buildAddForm()
+                    : _buildSearchAndList(),
+      ),
     );
   }
+
+
+
 
   Widget _buildSearchAndList() {
     return SafeArea(
@@ -316,6 +336,7 @@ class ManageRestaurantsScreenState extends State<ManageRestaurantsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Tombol Add New Restaurant
             Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
@@ -332,6 +353,7 @@ class ManageRestaurantsScreenState extends State<ManageRestaurantsScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            // Search Bar
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -343,43 +365,88 @@ class ManageRestaurantsScreenState extends State<ManageRestaurantsScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            // Daftar Restoran
             Expanded(
               child: _filteredRestaurants.isEmpty
-                  ? const Text('No restaurants found.')
+                  ? const Center(
+                      child: Text(
+                        'No restaurants found.',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: _filteredRestaurants.length,
                       itemBuilder: (context, index) {
                         final restaurant = _filteredRestaurants[index];
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.only(bottom: 16.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                        return Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFFFFFFFF), // Putih
+                                Color(0xFFFFBBDF), // Pink lembut
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            borderRadius: BorderRadius.circular(16), // Membulatkan sudut
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              )
+                            ],
                           ),
-                          child: ListTile(
-                            title: Text(
-                              restaurant.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                          margin: const EdgeInsets.only(bottom: 16.0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 12.0,
                             ),
-                            subtitle: Text(
-                              'Rating: ${restaurant.rating} | '
-                              'Price: ${restaurant.averagePrice} | '
-                              'Food: ${restaurant.foodPreference} | '
-                              'Atmosphere: ${restaurant.atmosphere}',
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
+                            child: Row(
                               children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  color: Colors.orange,
-                                  onPressed: () => _selectForEdit(restaurant),
+                                // Informasi Restoran
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        restaurant.name,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Rating: ${restaurant.rating} | '
+                                        'Price: ${restaurant.averagePrice} | '
+                                        'Food: ${restaurant.foodPreference} | '
+                                        'Atmosphere: ${restaurant.atmosphere}',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  color: Colors.red,
-                                  onPressed: () =>
-                                      _confirmDelete(restaurant.id),
+                                const SizedBox(width: 16),
+                                // Aksi Edit & Delete
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      color: Colors.orange,
+                                      onPressed: () => _selectForEdit(restaurant),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      color: Colors.red,
+                                      onPressed: () => _confirmDelete(restaurant.id),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -393,6 +460,7 @@ class ManageRestaurantsScreenState extends State<ManageRestaurantsScreen> {
       ),
     );
   }
+
 
   Widget _buildAddForm() {
     return Form(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/restaurant.dart'; 
-import '../services/restaurant_api.dart'; 
-import 'package:wanderscout/Davin/widgets/left_drawer.dart'; 
-import 'restaurant_detail.dart'; 
+import '../models/restaurant.dart';
+import '../services/restaurant_api.dart';
+import 'package:wanderscout/Davin/widgets/left_drawer.dart';
+import 'restaurant_detail.dart';
 
 class RestaurantListScreen extends StatefulWidget {
   const RestaurantListScreen({super.key});
@@ -38,7 +38,6 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
       setState(() {
         allRestaurants = restaurants;
 
-        // Extract unique food preferences for filtering
         final preferences = allRestaurants
             .map((restaurant) => restaurant.foodPreference)
             .toSet()
@@ -52,7 +51,6 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
         displayedRestaurants = filteredRestaurants.take(pageSize).toList();
       });
     } catch (error) {
-      // Use debugPrint instead of print
       debugPrint('Error fetching restaurants: $error');
     }
   }
@@ -107,18 +105,29 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Restaurants'),
+        title: const Text(
+          'Restaurants',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color(0xFF313EBC), // Warna solid untuk judul
       ),
       drawer: const LeftDrawer(),
-      body: SafeArea(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF313EBC), Color(0xFFA6ADEF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: Column(
           children: [
-            // Search and Filter Row
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  // Search Bar
                   Expanded(
                     flex: 2,
                     child: TextField(
@@ -136,7 +145,6 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Filter Dropdown
                   Expanded(
                     flex: 1,
                     child: DropdownButton<String>(
@@ -159,7 +167,6 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
                 ],
               ),
             ),
-            // Restaurant List
             Expanded(
               child: allRestaurants.isEmpty
                   ? const Center(child: CircularProgressIndicator())
@@ -180,12 +187,18 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
                           if (index < displayedRestaurants.length) {
                             final restaurant = displayedRestaurants[index];
 
-                            return Card(
-                              elevation: 4,
-                              margin: const EdgeInsets.only(bottom: 16.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            return Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Color(0xFFFFFFFF), Color(0xFFECEB7F)],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(16),
+                                ),
                               ),
+                              margin: const EdgeInsets.only(bottom: 16.0),
                               child: InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -199,13 +212,12 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
                                   );
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(16.0),
                                   child: isSmallScreen
                                       ? Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            // Image Section
                                             ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(8),
@@ -215,19 +227,15 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
                                                         .displayName),
                                                 fit: BoxFit.cover,
                                                 width: double.infinity,
-                                                height: 200,
+                                                height: 100,
                                               ),
                                             ),
                                             const SizedBox(height: 8),
-                                            // Details Section
                                             buildRestaurantDetails(restaurant),
                                           ],
                                         )
                                       : Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: [
-                                            // Image Section
                                             ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(8),
@@ -236,12 +244,11 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
                                                     restaurant.foodPreference
                                                         .displayName),
                                                 fit: BoxFit.cover,
-                                                width: 150,
-                                                height: 150,
+                                                width: 100,
+                                                height: 100,
                                               ),
                                             ),
                                             const SizedBox(width: 16),
-                                            // Details Section
                                             Expanded(
                                               child: buildRestaurantDetails(
                                                   restaurant),
@@ -269,47 +276,30 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Restaurant Name
         Text(
-          restaurant.name,
+          restaurant.name.toUpperCase(),
           style: const TextStyle(
-            fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.blue,
+            fontSize: 18,
           ),
         ),
         const SizedBox(height: 8),
-        // Rating
         Text(
           'Rating: ${restaurant.rating} / 5',
-          style: const TextStyle(color: Colors.grey),
         ),
-        const SizedBox(height: 4),
-        // Average Price
         Text(
           'Average Price: Rp ${restaurant.averagePrice}',
-          style: const TextStyle(color: Colors.grey),
         ),
-        const SizedBox(height: 4),
-        // Food Preference
         Text(
           'Food Preference: ${restaurant.foodPreference.displayName}',
-          style: const TextStyle(color: Colors.grey),
         ),
-        const SizedBox(height: 4),
-        // Atmosphere
         Text(
           'Atmosphere: ${restaurant.atmosphere.displayName}',
-          style: const TextStyle(color: Colors.grey),
         ),
-        const SizedBox(height: 4),
-        // Food Variety
         Text(
           'Food Variety: ${restaurant.foodVariety}',
-          style: const TextStyle(color: Colors.grey),
         ),
       ],
     );
   }
 }
-
