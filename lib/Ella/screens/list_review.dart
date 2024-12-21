@@ -13,7 +13,6 @@ class ReviewListPage extends StatefulWidget {
 class _ReviewListPageState extends State<ReviewListPage> {
   final ReviewApi _api = ReviewApi();
 
-  // _reviews is never reassigned, so final is fine
   final List<ReviewEntry> _reviews = [];
   bool _isLoading = false;
   bool _hasMore = true;
@@ -94,7 +93,6 @@ class _ReviewListPageState extends State<ReviewListPage> {
       _isLoading = true;
     });
 
-    // Delay 2 seconds to show the spinner longer
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
 
@@ -117,7 +115,6 @@ class _ReviewListPageState extends State<ReviewListPage> {
         } else {
           _reviews.addAll(fetchedReviews);
           _currentPage++;
-          // If fewer than _pageSize reviews, no more pages
           if (fetchedReviews.length < _pageSize) {
             _hasMore = false;
           }
@@ -193,58 +190,78 @@ class _ReviewListPageState extends State<ReviewListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reviews'),
+        title: const Text('Customer Reviews'),
+        backgroundColor: Colors.blue.shade800,
       ),
       drawer: const LeftDrawer(),
-      body: Column(
-        children: [
-          // Filter Section
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                const Text('Filter by Rating: '),
-                DropdownButton<String>(
-                  value: _selectedRating,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedRating = newValue ?? 'All Ratings';
-                    });
-                  },
-                  items: <String>['All Ratings', '1', '2', '3', '4', '5']
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _refreshReviews,
-                  child: const Text('Apply'),
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF313EBC), Color(0xFFA6ADEF)], // Blue gradient for background
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _refreshReviews,
-              child: _buildReviewList(),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Filter by Rating: ',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  DropdownButton<String>(
+                    dropdownColor: Color(0xFFA6ADEF),
+                    value: _selectedRating,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedRating = newValue ?? 'All Ratings';
+                      });
+                    },
+                    items: <String>['All Ratings', '1', '2', '3', '4', '5']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFA6ADEF),
+                    ),
+                    onPressed: _refreshReviews,
+                    child: const Text('Apply'),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshReviews,
+                child: _buildReviewList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildReviewList() {
     if (_reviews.isEmpty && !_isLoading) {
-      if (_selectedRating == 'All Ratings') {
-        return const Center(child: Text('No reviews yet.'));
-      } else {
-        return const Center(child: Text('No reviews yet for this rating.'));
-      }
+      return const Center(
+        child: Text(
+          'No reviews available.',
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      );
     }
 
     return ListView.builder(
@@ -253,26 +270,36 @@ class _ReviewListPageState extends State<ReviewListPage> {
       itemBuilder: (context, index) {
         if (index < _reviews.length) {
           final review = _reviews[index];
-
-          // If adminReplies is nullable, use this approach:
           final hasAdminReplies = review.adminReplies.isNotEmpty;
 
           return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: Padding(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            elevation: 5,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFB27FEC), Color(0xFFFFFFFF)], // Purple gradient for cards
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Username and optional delete icon
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        review.username,
+                        '${review.username.toUpperCase()} says..',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: Colors.black,
                         ),
                       ),
                       if (_canDeleteReview(review))
@@ -286,9 +313,24 @@ class _ReviewListPageState extends State<ReviewListPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(review.reviewText),
+                  Text(
+                    review.reviewText.isNotEmpty
+                        ? '"${review.reviewText}"'
+                        : 'No rating message available',
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text('Rating: ${review.rating}/5'),
+                  Text(
+                    'Rating: ${review.rating}/5',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   if (hasAdminReplies)
                     Column(
@@ -298,19 +340,34 @@ class _ReviewListPageState extends State<ReviewListPage> {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             "Admin Reply: ${reply.replyText} (${reply.adminUsername})",
-                            style: const TextStyle(fontStyle: FontStyle.italic),
+                            style: const TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
                           ),
                         );
                       }).toList(),
                     )
                   else
-                    const Text('No admin replies yet.'),
+                    const Text(
+                      'No admin replies yet.',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: 14,
+                        color: Colors.black45,
+                      ),
+                    ),
                   if (_isAdmin) ...[
                     const SizedBox(height: 16),
                     TextField(
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Write your reply...',
-                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onSubmitted: (value) {
                         if (value.isNotEmpty) {
@@ -324,11 +381,12 @@ class _ReviewListPageState extends State<ReviewListPage> {
             ),
           );
         } else {
-          // Only show the spinner if we still have more data to load
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 16.0),
             child: Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
             ),
           );
         }
