@@ -12,6 +12,10 @@ cd ..
 git clone -b beta https://github.com/flutter/flutter.git
 export PATH=`pwd`/flutter/bin:$PATH
 
+cat <<EOT > .env
+BASE_URL=https://wander-scout-project.vercel.app/
+EOT
+
 flutter channel stable
 flutter doctor
 
