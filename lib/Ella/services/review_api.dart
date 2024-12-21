@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:wanderscout/Ella/models/review_entry.dart';
 import 'package:wanderscout/Davin/API/api_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ReviewApi {
   final ApiService _apiService;
-  final String _baseUrl = 'https://alano-davin-wanderscout.pbp.cs.ui.ac.id/';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
 
-  // Initialize the API service
+  
   ReviewApi() : _apiService = ApiService();
 
   Future<List<ReviewEntry>> fetchReviews({
@@ -14,13 +15,13 @@ class ReviewApi {
     required int pageSize,
     int? rating,
   }) async {
-    // Build query parameters
+    
     final queryParams = {
       'page': '$page',
       'page_size': '$pageSize',
     };
 
-    // Add rating only if it's provided
+    
     if (rating != null) {
       queryParams['rating'] = rating.toString();
     }
@@ -45,7 +46,7 @@ class ReviewApi {
     return reviewsJson.map((json) => ReviewEntry.fromJson(json)).toList();
   }
 
-  // Check if the user is an admin
+  
   Future<bool> isAdmin() async {
     final response = await _apiService.get(
       url: '${_baseUrl}check_if_admin/',
@@ -59,7 +60,7 @@ class ReviewApi {
     }
   }
 
-  // Add a reply as an admin
+  
   Future<void> addAdminReply({
     required int reviewId,
     required String replyText,
@@ -74,7 +75,7 @@ class ReviewApi {
     }
   }
 
-  // Get the current logged-in user's username
+  
   Future<String> getCurrentUser() async {
     final response = await _apiService.get(
       url: '${_baseUrl}get_current_user/',
@@ -92,7 +93,7 @@ class ReviewApi {
     }
   }
 
-  // Delete a review
+  
   Future<void> deleteReview(int reviewId) async {
     final response = await _apiService.delete(
       url: '${_baseUrl}reviews/$reviewId/delete/',
