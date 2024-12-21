@@ -44,6 +44,8 @@ dependencies:
   http: any
   xml: ^5.3.1
   url_launcher: any
+  flutter_dotenv: ^5.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -69,6 +71,7 @@ flutter:
   assets:
     - lib/static/food_pref/
     - lib/static/attractions/
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

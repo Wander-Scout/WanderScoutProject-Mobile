@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:wanderscout/Davin/screens/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,7 +26,7 @@ Future<void> _login() async {
   final userProvider = context.read<UserProvider>();
   final username = _usernameController.text.trim();
   final password = _passwordController.text.trim();
-
+  final String? baseUrl = dotenv.env['BASE_URL'];
   setState(() {
     _isLoading = true;
   });
@@ -33,7 +34,7 @@ Future<void> _login() async {
   try {
     // Make the login request
     final response = await request.login(
-      "https://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/flutter_login/",
+      "$baseUrl/authentication/flutter_login/",
       {'username': username, 'password': password},
     );
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wanderscout/Davin/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -23,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
       String username = _usernameController.text.trim();
       String password1 = _passwordController.text.trim();
       String password2 = _confirmPasswordController.text.trim();
+      final String? baseUrl = dotenv.env['BASE_URL'];
 
       if (password1 != password2) {
         if (mounted) {
@@ -38,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
       try {
         // Send the POST request
         final response = await request.post(
-          "https://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/register-flutter/",
+          "$baseUrl/authentication/register-flutter/",
           jsonEncode({
             "username": username,
             "password1": password1,
