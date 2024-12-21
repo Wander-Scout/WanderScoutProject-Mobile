@@ -144,5 +144,5 @@ This section describes the integration of our Flutter mobile application with th
    - Support for detailed views of specific attractions.
 
 ---
-### FIGMA LINK FOR APPLICATION DESIGN:
+### FIGMA LINK FOR APPLICATION DESIGN :
 https://www.figma.com/design/jYeQY3N1oKWOGXgjxPKyWV/Untitled?node-id=0-1&t=0qGbpUdxiO0BQOBy-1
