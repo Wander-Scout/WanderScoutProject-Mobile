@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:wanderscout/Davin/API/api_service.dart'; // Adjust the import path if necessary
 import 'package:wanderscout/Davin/widgets/left_drawer.dart'; // Import LeftDrawer
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 class AddRestaurantScreen extends StatefulWidget {
   const AddRestaurantScreen({super.key});
@@ -25,13 +27,14 @@ class AddRestaurantScreenState extends State<AddRestaurantScreen> {
   List<String> atmospheres = ['Santai', 'Formal'];
 
   void _submitForm() async {
+    final String? baseUrl = dotenv.env['BASE_URL'];
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
       try {
         final apiService = ApiService();
         final response = await apiService.post(
-          url: 'http://127.0.0.1:8000/restaurant/add-restaurant/', // Adjust URL as needed
+          url: '$baseUrl/restaurant/add-restaurant/', // Adjust URL as needed
           body: {
             'name': name,
             'food_preference': foodPreference,

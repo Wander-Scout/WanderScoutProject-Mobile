@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:wanderscout/Hafizh/screens/delete_restaurant.dart';
 import 'package:wanderscout/kez/screens/cart_screen.dart';
 import 'package:wanderscout/Davin/screens/login.dart';
 import 'package:wanderscout/Davin/screens/tourist_attraction_list.dart';
@@ -12,8 +11,7 @@ import 'package:wanderscout/Ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
 import 'package:wanderscout/hh/screens/news.dart'; 
 import 'package:wanderscout/Davin/providers/user_provider.dart';
-import 'package:wanderscout/Hafizh/screens/add_restaurant.dart';
-import 'package:wanderscout/Hafizh/screens/edit_restaurant.dart';
+import 'package:wanderscout/Hafizh/screens/manage_restaurant.dart';
 import 'package:wanderscout/Hafizh/screens/edit_profile.dart';
 import 'package:wanderscout/Davin/screens/admin_tourist.dart';
 
@@ -108,59 +106,6 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
 
-          // ============================
-          // ADMIN-ONLY MENU SECTION
-          // ============================
-          if (isAdmin) ...[
-            ListTile(
-              leading: const Icon(Icons.add_business, color: Colors.black),
-              title: const Text('Add Restaurant'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddRestaurantScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.edit_sharp, color: Colors.black),
-              title: const Text('Edit Restaurant'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SearchAndEditRestaurantScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.black),
-              title: const Text('Delete Restaurant'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SearchAndDeleteRestaurantScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.manage_search, color: Colors.black),
-              title: const Text('Manage Attractions'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AdminTouristAttractionScreen(),
-                  ),
-                );
-              },
-            ),
-          ],
           ListTile(
             leading: const Icon(Icons.newspaper, color: Colors.black),
             title: const Text('News'),
@@ -186,7 +131,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person, color: Colors.black),
+            leading: const Icon(Icons.manage_accounts, color: Colors.black),
             title: const Text('Edit Profile'),
             onTap: () {
               Navigator.push(
@@ -197,6 +142,36 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
+
+          // ============================
+          // ADMIN-ONLY MENU SECTION
+          // ============================
+          if (isAdmin) ...[
+            ListTile(
+              leading: const Icon(Icons.add_business, color: Colors.black),
+              title: const Text('Manage Restaurant'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ManageRestaurantsScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.manage_search, color: Colors.black),
+              title: const Text('Manage Attractions'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminTouristAttractionScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.black),
@@ -205,7 +180,7 @@ class LeftDrawer extends StatelessWidget {
               final request = Provider.of<CookieRequest>(context, listen: false);
               final userProvider = Provider.of<UserProvider>(context, listen: false);
               const logoutUrl =
-                  "http://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/flutter_logout/";
+                  "http://127.0.0.1:8000/authentication/flutter_logout/";
 
               try {
                 final response = await request.logout(logoutUrl);

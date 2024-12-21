@@ -9,6 +9,7 @@ on:
       - hh
       - kez
       - matsu
+      - hafizh
   pull_request:
     branches:
       - davin
@@ -16,6 +17,7 @@ on:
       - hh
       - kez
       - matsu
+      - hafizh
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
