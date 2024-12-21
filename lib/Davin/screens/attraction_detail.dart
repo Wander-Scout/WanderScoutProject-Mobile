@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wanderscout/Davin/models/touristattraction.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wanderscout/kez/services/cart_service.dart';
 
 class AttractionDetailScreen extends StatelessWidget {
   final TouristAttraction attraction;
@@ -138,10 +139,33 @@ class AttractionDetailScreen extends StatelessWidget {
             'View on Google Maps',
             style: TextStyle(fontSize: 16, color: Colors.blue),
           ),
-        )
-      ],
-    );
+        ),
+        const SizedBox(height: 16),
+            // Add to Cart Button
+            ElevatedButton(
+              onPressed: () => _addToCart(context),
+              child: const Text('Add to Cart'),
+            ),
+          ],
+        );
+      }
+      // Function to add the attraction to the cart
+  Future<void> _addToCart(BuildContext context) async {
+  try {
+    await CartService.addToCart(attraction.id.toString(), 'attraction');
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Attraction added to cart successfully!')),
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add to cart: $e')),
+      );
+    }
   }
+}
 
   String getImageForAttractionType(String? type) {
     final firstCategory = type

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wanderscout/kez/screens/receipt_screen.dart';
+import 'package:wanderscout/kez/screens/booking_search.dart';
 import 'package:wanderscout/kez/services/cart_service.dart';
-import 'package:wanderscout/kez/models/cart_item.dart'; // Import the models
+import 'package:wanderscout/kez/models/cart_item.dart';
+import 'package:wanderscout/kez/screens/receipt_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -11,12 +12,12 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  List<Item> _cartItems = []; // Full list of cart items
-  List<Item> _displayedItems = []; // Items currently displayed
+  List<Item> _cartItems = [];
+  List<Item> _displayedItems = [];
   double _totalCost = 0.0;
-  bool _isLoading = true; // Initial loading
-  bool _isFetchingMore = false; // Loading during scroll
-  final int _itemsToShow = 10; // Number of items to display per batch
+  bool _isLoading = true;
+  bool _isFetchingMore = false;
+  final int _itemsToShow = 10;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -34,32 +35,29 @@ class _CartScreenState extends State<CartScreen> {
     super.dispose();
   }
 
-  /// Fetch cart items from the server
   Future<void> _fetchCart() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final cartDetails = await CartService.fetchCartItems(); // Use CartDetails model
+      final cartDetails = await CartService.fetchCartItems();
       setState(() {
-        _cartItems = cartDetails.cart.items; // Extract items
+        _cartItems = cartDetails.cart.items;
         _totalCost = _cartItems.fold(
           0.0,
           (sum, item) => sum + (item.price * item.quantity),
-        ); // Calculate total cost
-        _displayedItems = _cartItems.take(_itemsToShow).toList(); // Show initial items
+        );
+        _displayedItems = _cartItems.take(_itemsToShow).toList();
         _isLoading = false;
       });
     } catch (e) {
-      print('Error fetching cart: $e');
       setState(() {
         _isLoading = false;
       });
     }
   }
 
-  /// Handle scroll listener to load more items
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
         !_isFetchingMore) {
@@ -67,66 +65,66 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  /// Load more items when scrolling down
   void _loadMoreItems() {
     if (_displayedItems.length >= _cartItems.length) {
-      return; // No more items to load
+      return;
     }
 
     setState(() {
-      _isFetchingMore = true; // Start showing the loading spinner
+      _isFetchingMore = true;
     });
 
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         final nextItems = _cartItems.skip(_displayedItems.length).take(_itemsToShow).toList();
         _displayedItems.addAll(nextItems);
-        _isFetchingMore = false; // Stop showing the loading spinner
+        _isFetchingMore = false;
       });
     });
   }
 
-  /// Handle removing an item
-  Future<void> _removeItem(String itemId) async {
+  Future<void> _checkout() async {
     try {
-      await CartService.removeFromCart(itemId);
-      setState(() {
-        _cartItems.removeWhere((item) => item.id == itemId);
-        _displayedItems = _cartItems.take(_displayedItems.length).toList();
-        _totalCost = _cartItems.fold(
-          0.0,
-          (sum, item) => sum + (item.price * item.quantity),
+      final receipt = await CartService.checkout();
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReceiptScreen(receipt: receipt),
+          ),
         );
-      });
+      }
     } catch (e) {
-      print('Error removing item: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to checkout. Please try again.')),
+        );
+      }
     }
   }
 
-  /// Handle checkout
- Future<void> _checkout() async {
-  try {
-    final receipt = await CartService.checkout();
-
-    // Navigate to ReceiptScreen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ReceiptScreen(
-          bookingId: receipt.bookingId,
-          services: receipt.items.map((item) => item.name).toList(),
-          totalPrice: receipt.totalPrice, // Ensure this is a double
-        ),
-      ),
-    );
-  } catch (e) {
-    print('Checkout error: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Checkout failed: $e')),
-    );
+  Future<void> _removeItem(String itemId) async {
+    try {
+      await CartService.removeFromCart(itemId);
+      if (mounted) {
+        setState(() {
+          _cartItems.removeWhere((item) => item.id == itemId);
+          _displayedItems = _cartItems.take(_displayedItems.length).toList();
+          _totalCost = _cartItems.fold(
+            0.0,
+            (sum, item) => sum + (item.price * item.quantity),
+          );
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to remove item: $e')),
+        );
+      }
+    }
   }
-}
-
 
 
   @override
@@ -140,10 +138,9 @@ class _CartScreenState extends State<CartScreen> {
                 Expanded(
                   child: ListView.builder(
                     controller: _scrollController,
-                    itemCount: _displayedItems.length + 1, // Add 1 for the loading spinner
+                    itemCount: _displayedItems.length + 1,
                     itemBuilder: (_, index) {
                       if (index == _displayedItems.length) {
-                        // Show loading spinner at the bottom if fetching more items
                         return _isFetchingMore
                             ? const Center(child: CircularProgressIndicator())
                             : const SizedBox.shrink();
@@ -175,9 +172,21 @@ class _CartScreenState extends State<CartScreen> {
                       Text('Total: Rp $_totalCost'),
                       const SizedBox(height: 10),
                       ElevatedButton(
-                        onPressed: _cartItems.isEmpty ? null : _checkout,
+                        onPressed: _checkout,
                         child: const Text('Checkout'),
                       ),
+                      ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BookingSearchScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text('Search Booking'),
+                    ),
+
                     ],
                   ),
                 ),
