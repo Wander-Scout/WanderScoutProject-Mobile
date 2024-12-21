@@ -912,267 +912,265 @@ final List<String> _typeOptions = [
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text(
-        'Edit Attraction',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      backgroundColor: const Color(0xFF313EBC), // Dark blue
-    ),
-    body: Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF313EBC), // Dark blue
-            Color(0xFF87CEFA), // Light blue
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Edit Attraction',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        backgroundColor: const Color(0xFF313EBC), // Dark blue
       ),
-      child: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(25), // 10% opacity
-                  blurRadius: 8.0,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Field "No"
-                  const Text(
-                    'No',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _noController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1), // Light gray
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: _intValidator,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Field "Name"
-                  const Text(
-                    'Name',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _namaController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator: _nonEmptyValidator,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Rating Slider
-                  const Text(
-                    'Rating (0-5)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Slider(
-                    value: _rating,
-                    min: 0,
-                    max: 5,
-                    divisions: 5,
-                    activeColor: Colors.blue,
-                    inactiveColor: const Color.fromRGBO(200, 200, 200, 1), // Light gray
-                    label: _rating.toString(),
-                    onChanged: (double value) {
-                      setState(() => _rating = value);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Vote Average Slider
-                  const Text(
-                    'Vote Average (0-5)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Slider(
-                    value: _voteAverage,
-                    min: 0,
-                    max: 5,
-                    divisions: 5,
-                    activeColor: Colors.blue,
-                    inactiveColor: const Color.fromRGBO(200, 200, 200, 1),
-                    label: _voteAverage.toString(),
-                    onChanged: (double value) {
-                      setState(() => _voteAverage = value);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Field "Vote Count"
-                  const Text(
-                    'Vote Count',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _voteCountController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: _intValidator,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Type Dropdown
-                  const Text(
-                    'Select Type',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  DropdownButtonFormField<String>(
-                    value: _selectedType,
-                    items: _typeOptions
-                        .map((type) => DropdownMenuItem<String>(
-                              value: type,
-                              child: Text(type),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _selectedType = value);
-                      }
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Weekday Price
-                  const Text(
-                    'Weekday Price (IDR)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _htmWeekdayController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: _intValidator,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Weekend Price
-                  const Text(
-                    'Weekend Price (IDR)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _htmWeekendController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: _intValidator,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Description
-                  const Text(
-                    'Description',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(240, 240, 240, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    maxLines: 3,
-                    validator: _nonEmptyValidator,
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Submit Button
-                  ElevatedButton(
-                    onPressed: _isSubmitting ? null : _submitForm,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF313EBC),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: _isSubmitting
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Update Attraction',
-                            style: TextStyle(color: Colors.white),
-                          ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF313EBC), // Dark blue
+              Color(0xFF87CEFA), // Light blue
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(255, 255, 255, 1), // Pure white
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromRGBO(0, 0, 0, 0.1), // 10% opacity
+                    blurRadius: 8.0,
+                    offset: const Offset(0, 4),
                   ),
                 ],
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Field "No"
+                    const Text(
+                      'No',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _noController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1), // Light gray
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: _intValidator,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Field "Name"
+                    const Text(
+                      'Name',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _namaController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      validator: _nonEmptyValidator,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Rating Slider
+                    const Text(
+                      'Rating (0-5)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Slider(
+                      value: _rating,
+                      min: 0,
+                      max: 5,
+                      divisions: 5,
+                      activeColor: Colors.blue,
+                      inactiveColor: const Color.fromRGBO(200, 200, 200, 1), // Light gray
+                      label: _rating.toString(),
+                      onChanged: (double value) {
+                        setState(() => _rating = value);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Vote Average Slider
+                    const Text(
+                      'Vote Average (0-5)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Slider(
+                      value: _voteAverage,
+                      min: 0,
+                      max: 5,
+                      divisions: 5,
+                      activeColor: Colors.blue,
+                      inactiveColor: const Color.fromRGBO(200, 200, 200, 1),
+                      label: _voteAverage.toString(),
+                      onChanged: (double value) {
+                        setState(() => _voteAverage = value);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Field "Vote Count"
+                    const Text(
+                      'Vote Count',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _voteCountController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: _intValidator,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Type Dropdown
+                    const Text(
+                      'Select Type',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: _selectedType,
+                      items: _typeOptions
+                          .map((type) => DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(type),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _selectedType = value);
+                        }
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Weekday Price
+                    const Text(
+                      'Weekday Price (IDR)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _htmWeekdayController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: _intValidator,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Weekend Price
+                    const Text(
+                      'Weekend Price (IDR)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _htmWeekendController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: _intValidator,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Description
+                    const Text(
+                      'Description',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromRGBO(240, 240, 240, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      maxLines: 3,
+                      validator: _nonEmptyValidator,
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Submit Button
+                    ElevatedButton(
+                      onPressed: _isSubmitting ? null : _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF313EBC),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: _isSubmitting
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Update Attraction',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 }
