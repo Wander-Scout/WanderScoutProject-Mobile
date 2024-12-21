@@ -3,17 +3,14 @@ name: Release
 
 # Controls when the workflow will run
 on:
- # Triggers the workflow on push events but only for the main branch
   push:
     branches: [main]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "Build and Release APK"
   releases:
     name: Build and Release APK
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
@@ -25,7 +22,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: "zulu"
+          distribution: "temurin"
           java-version: "17"
 
       - name: Setup Flutter
@@ -36,6 +33,13 @@ jobs:
       - name: Get packages
         run: flutter pub get
 
+      - name: Generate .env file
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: |
+          echo "BASE_URL=$BASE_URL" > .env
+          echo "Generated .env file with BASE_URL"
+
       - name: Generate Java keystore
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
@@ -45,6 +49,11 @@ jobs:
         env:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --split-per-abi
+
+      - name: Delete .env file to protect sensitive data
+        run: |
+          rm -f .env
+          echo ".env file deleted"
 
       - name: Get current date
         id: date
@@ -58,4 +67,4 @@ jobs:
           body: "Published at ${{ steps.date.outputs.date }}"
           name: "v${{ steps.version.outputs.version }}"
           token: ${{ secrets.GH_TOKEN }}
-          tag: ${{ steps.version.outputs.version }}
+          tag: ${{ steps.version.outputs.version }}"

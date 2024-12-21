@@ -10,11 +10,12 @@ import 'package:wanderscout/Davin/screens/tourist_attraction_list.dart';
 import 'package:wanderscout/Ella/screens/list_review.dart';
 import 'package:wanderscout/Ella/screens/reviewentry_form.dart';
 import 'package:wanderscout/Hafizh/screens/restaurant_list.dart';
-import 'package:wanderscout/hh/screens/news.dart'; // Import the news page
-import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:wanderscout/hh/screens/news.dart'; 
+import 'package:wanderscout/Davin/providers/user_provider.dart';
 import 'package:wanderscout/Hafizh/screens/add_restaurant.dart';
 import 'package:wanderscout/Hafizh/screens/edit_restaurant.dart';
 import 'package:wanderscout/Hafizh/screens/edit_profile.dart';
+import 'package:wanderscout/Davin/screens/admin_tourist.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -29,7 +30,7 @@ class LeftDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor, // Use primary color
+              color: Theme.of(context).primaryColor,
             ),
             child: Center(
               child: Column(
@@ -57,6 +58,7 @@ class LeftDrawer extends StatelessWidget {
               ),
             ),
           ),
+          // Example user menu
           ListTile(
             leading: const Icon(Icons.comment, color: Colors.black),
             title: const Text('Customer Reviews'),
@@ -105,7 +107,10 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
-          // Admin-only options
+
+          // ============================
+          // ADMIN-ONLY MENU SECTION
+          // ============================
           if (isAdmin) ...[
             ListTile(
               leading: const Icon(Icons.add_business, color: Colors.black),
@@ -117,7 +122,6 @@ class LeftDrawer extends StatelessWidget {
                     builder: (context) => const AddRestaurantScreen(),
                   ),
                 );
-                
               },
             ),
             ListTile(
@@ -145,16 +149,21 @@ class LeftDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.add_location, color: Colors.black),
-              title: const Text('Add Attraction'),
+              leading: const Icon(Icons.manage_search, color: Colors.black),
+              title: const Text('Manage Attractions'),
               onTap: () {
-                // Navigate to Add Attraction page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminTouristAttractionScreen(),
+                  ),
+                );
               },
             ),
           ],
           ListTile(
             leading: const Icon(Icons.newspaper, color: Colors.black),
-            title: const Text('News'), // New entry for News
+            title: const Text('News'),
             onTap: () {
               Navigator.push(
                 context,
@@ -194,26 +203,20 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Logout'),
             onTap: () async {
               final request = Provider.of<CookieRequest>(context, listen: false);
-              final userProvider =
-                  Provider.of<UserProvider>(context, listen: false); // Access UserProvider
+              final userProvider = Provider.of<UserProvider>(context, listen: false);
               const logoutUrl =
                   "http://alano-davin-wanderscout.pbp.cs.ui.ac.id/authentication/flutter_logout/";
 
               try {
                 final response = await request.logout(logoutUrl);
-
                 if (context.mounted) {
                   if (response != null && response['status'] != null) {
-                    String message =
-                        response["message"] ?? "Unexpected error occurred.";
+                    String message = response["message"] ?? "Unexpected error occurred.";
                     if (response['status']) {
-                      // Reset UserProvider state
+                      // Reset admin/user state
                       userProvider.reset();
-
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("$message Goodbye"),
-                        ),
+                        SnackBar(content: Text("$message Goodbye")),
                       );
                       Navigator.pushReplacement(
                         context,
@@ -223,9 +226,7 @@ class LeftDrawer extends StatelessWidget {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(message),
-                        ),
+                        SnackBar(content: Text(message)),
                       );
                     }
                   } else {
@@ -237,11 +238,9 @@ class LeftDrawer extends StatelessWidget {
                   }
                 }
               } catch (e) {
-                if (!context.mounted) return; // Double-check before using context
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Error during logout: $e"),
-                  ),
+                  SnackBar(content: Text("Error during logout: $e")),
                 );
               }
             },
