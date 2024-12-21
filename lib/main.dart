@@ -5,8 +5,10 @@ import 'package:wanderscout/Davin/screens/login.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:wanderscout/Davin/providers/user_provider.dart'; // Import UserProvider
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import dotenv
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
